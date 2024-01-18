@@ -1,4 +1,21 @@
-﻿using FormulaEvaluator;
+﻿/// <summary>
+/// Author:    Yanxia Bu
+/// Partner:    No
+/// Date:     1/15/2024
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Yanxia Bu - This work may not 
+///            be copied for use in Academic Coursework.
+///
+/// I, Yanxia Bu, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All 
+/// references used in the completion of the assignments are cited 
+/// in my README file.
+///
+/// File Contents
+///
+///   the spreadsheet 
+/// </summary>
+using FormulaEvaluator;
 using System;
 // simple test plus and minus or single
 Console.WriteLine(Evaluator.Evaluate("1+1",null));
@@ -21,7 +38,11 @@ Console.WriteLine(Evaluator.Evaluate("((1+2)-3)*10/2", null));
 Console.WriteLine(Evaluator.Evaluate("((4+2)-3)*10/2", null));
 Console.WriteLine(Evaluator.Evaluate("((1)+1+(1+1+2)-1)", null));
 // vairable test 
-Evaluator.Lookup variavle = new Evaluator.Lookup("A5");
+Console.WriteLine(Evaluator.Evaluate("10/5+A5", Lookup));
+Console.WriteLine(Evaluator.Evaluate("10+A5", Lookup));
+Console.WriteLine(Evaluator.Evaluate("A5", Lookup));
+Console.WriteLine(Evaluator.Evaluate("10*A5+A5", Lookup));
+Console.WriteLine(Evaluator.Evaluate("A5-1", Lookup));
 // bug test such as wrong variable format, expression format, sysmbol format and dividing zero 
 try
 { 
@@ -64,7 +85,7 @@ try
 }
 catch (ArgumentException)
 {
-    Console.WriteLine("wrong format");
+    Console.WriteLine("divide by zero");
 
 }
 try
@@ -103,12 +124,7 @@ catch (ArgumentException)
     Console.WriteLine("wrong format");
 
 }
-try
+static int Lookup(string s)
 {
-    Evaluator.Evaluate("5/0", null);
-}
-catch (ArgumentException)
-{
-    Console.WriteLine("wrong format");
-
+    return 2;
 }

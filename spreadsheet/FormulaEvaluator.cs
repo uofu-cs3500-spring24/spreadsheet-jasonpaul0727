@@ -1,6 +1,23 @@
-﻿using System.Text.RegularExpressions;
+﻿/// <summary>
+/// Author:    Yanxia Bu
+/// Partner:    No
+/// Date:     1/15/2024
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Yanxia Bu - This work may not 
+///            be copied for use in Academic Coursework.
+///
+/// I, Yanxia Bu, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All 
+/// references used in the completion of the assignments are cited 
+/// in my README file.
+///
+/// File Contents
+///
+///   the spreadsheet is functions are versatile tools in programming and mathematics, used for calculations, data manipulation, string operations, logical decision-making
+///  ,and automating repetitive tasks, thereby streamlining complex processes and enhancing efficiency.
+/// </summary>
+using System.Text.RegularExpressions;
 using System.Transactions;
-
 namespace FormulaEvaluator
 {
     public static class Evaluator
@@ -161,7 +178,7 @@ namespace FormulaEvaluator
             return false;
         }
         /// <summary>
-        /// the operation for multiplication or division
+        /// This function is the operation for multiplication or division
         /// </summary>
         /// <param name="first_Value"></param>
         /// <param name="second_Value"></param>
@@ -183,7 +200,7 @@ namespace FormulaEvaluator
             return result;
         }
         /// <summary>
-        /// this is the method for checking the the division is zero or value stack is zero
+        /// This is the method for checking the the division is zero or value stack is zero
         /// </summary>
         /// <param name="first_Value"></param>
         /// <param name="second_Value"></param>
@@ -202,7 +219,7 @@ namespace FormulaEvaluator
 
         }
         /// <summary>
-        /// use regex to check it is variable type or not
+        ///This function is  use regex to check it is variable type or not
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -217,7 +234,7 @@ namespace FormulaEvaluator
             return true;
         }
         /// <summary>
-        /// add or minus method
+        /// This function is add or minus method
         /// </summary>
         /// <param name="first_Value"></param>
         /// <param name="second_Value"></param>
@@ -226,9 +243,12 @@ namespace FormulaEvaluator
         /// <returns></returns>
         public static int addOrminus(int first_Value, int second_Value, Stack<int> value_Stack, Stack<string> operator_Stack)
         {
+            // check the edge case 
             zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack);
+            // check the symbol in stack is  plus or minus 
             if (operator_Stack.Peek() == "+" || operator_Stack.Peek() == "-")
             {
+                // if it is +
                 if (operator_Stack.Pop() == "+")
                 {
                     return first_Value + second_Value;
@@ -241,7 +261,7 @@ namespace FormulaEvaluator
             return int.MaxValue;
         }
         /// <summary>
-        /// check the value stack less than 2 or not
+        /// This function is check the value stack less than 2 or not
         /// </summary>
         /// <param name="value_Stack"></param>
         /// <exception cref="ArgumentException"></exception>
