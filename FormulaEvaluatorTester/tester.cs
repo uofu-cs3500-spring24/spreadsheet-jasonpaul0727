@@ -20,8 +20,9 @@ Console.WriteLine(Evaluator.Evaluate("10/5+(2-1)*2", null));
 Console.WriteLine(Evaluator.Evaluate("((1+2)-3)*10/2", null));
 Console.WriteLine(Evaluator.Evaluate("((4+2)-3)*10/2", null));
 Console.WriteLine(Evaluator.Evaluate("((1)+1+(1+1+2)-1)", null));
-Console.WriteLine(Evaluator.Evaluate("4/(2-1)+(1+2+(1)+2+(((1))))", null));
-// bug test
+// vairable test 
+Evaluator.Lookup variavle = new Evaluator.Lookup("A5");
+// bug test such as wrong variable format, expression format, sysmbol format and dividing zero 
 try
 { 
     Evaluator.Evaluate(" -A- ", null);
@@ -96,6 +97,15 @@ catch (ArgumentException)
 try
 {
     Evaluator.Evaluate(" (2A+3)) ", null);
+}
+catch (ArgumentException)
+{
+    Console.WriteLine("wrong format");
+
+}
+try
+{
+    Evaluator.Evaluate("5/0", null);
 }
 catch (ArgumentException)
 {
