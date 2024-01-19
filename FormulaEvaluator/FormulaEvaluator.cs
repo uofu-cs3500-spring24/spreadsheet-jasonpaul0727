@@ -37,7 +37,6 @@ namespace FormulaEvaluator
         /// <exception cref="ArgumentException"></exception>
         public static int Evaluate(string input, Lookup variableEvaluator)
         {
-
             // create 2 stack one store value, another one store operator
             Stack<int> value_Stack = new Stack<int>();
             Stack<string> operator_Stack = new Stack<string>();
