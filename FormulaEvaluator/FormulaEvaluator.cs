@@ -45,7 +45,7 @@ namespace FormulaEvaluator
             int count_Left_Parentheis = 0;
             foreach (string i in substrings)
             {
-                // because of the first one is empty which I need use if to skip it 
+                // because of the first one is empty which I need use if to skip it.
                 if (i == "")
                 {
                     continue;
