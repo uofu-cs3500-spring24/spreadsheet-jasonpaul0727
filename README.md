@@ -1,4 +1,4 @@
-﻿Author:     Yanxia Bu
+Author:     Yanxia Bu
 Partner:    None
 Start Date: 15-Jan-2024
 Course:     CS 3500, University of Utah, School of Computing
