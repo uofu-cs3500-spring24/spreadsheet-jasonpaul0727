@@ -86,6 +86,7 @@ namespace FormulaEvaluator
                             throw new ArgumentException("wrong format");
                         }
                     }
+                    // add to the stack
                     operator_Stack.Push(i); ;
                     continue;
                 }
