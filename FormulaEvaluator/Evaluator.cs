@@ -34,7 +34,7 @@ namespace FormulaEvaluator
         /// <param name="variableEvaluator"></lookup>
         /// <returns></int>
         /// <exception cref="ArgumentException"></exception>
-        public static int Evaluate(string input, Lookup variableEvaluator)
+        public static int Evaluator(string input, Lookup variableEvaluator)
         {
 
             // create 2 stack one store value, another one store operator
