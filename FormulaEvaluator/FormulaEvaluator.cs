@@ -22,7 +22,6 @@ namespace FormulaEvaluator
 {
     public static class Evaluator
     {
-
         /// This delegate type lookup
         /// <param name="v"></String>
         /// <returns></type lookup>
