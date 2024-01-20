@@ -11,7 +11,7 @@ Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Aca
 
 # Comments to Evaluators:
 The Evaluator method is the function for calculating the  expression by adding, minus, division and multiplication. 
-Each symbol will do different operation which also include integer and variable type. This function also preventing the wrong type. 
+Each symbol will do different operation which also include integer and variable type. This function also preventing the wrong type, argument exception 
 
 # Consulted Peers:
 
