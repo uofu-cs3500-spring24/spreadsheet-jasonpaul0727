@@ -269,7 +269,7 @@ namespace FormulaEvaluator
         {
             if (value_Stack.Count < 2)
             {
-                throw new ArgumentException("wrong formar");
+                throw new ArgumentException("wrong format");
             }
         }
     }
