@@ -1,8 +1,4 @@
-﻿
-Page
-3
-of 3
-// Skeleton implementation written by Joe Zachary for CS 3500, September 2013.
+﻿// Skeleton implementation written by Joe Zachary for CS 3500, September 2013.
 // Version 1.1 (Fixed error in comment for RemoveDependency.)
 // Version 1.2 - Daniel Kopta
 // (Clarified meaning of dependent and dependee.)
@@ -50,33 +46,53 @@ public class DependencyGraph
         /// <summary>
         /// Creates an empty DependencyGraph.
         /// </summary>
+        Dictionary<string, List<string>> dependents;
+        Dictionary<string, List<string>> dependees;
+        private int size;
         public DependencyGraph()
         {
+          dependents = new Dictionary<string, List<string>>();
+          dependees = new Dictionary<string, List<string>>();
         }
         /// <summary>
         /// The number of ordered pairs in the DependencyGraph.
         /// </summary>
         public int Size
         {
-            get { return 0; }
+          get { return size; } 
+
         }
         /// <summary>
         /// The size of dependees(s).
         /// This property is an example of an indexer. If dg is a DependencyGraph, you
        /// would
-/// invoke it like this:
-/// dg["a"]
-/// It should return the size of dependees("a")
-/// </summary>
+    /// invoke it like this:
+    /// dg["a"]
+    /// It should return the size of dependees("a")
+    /// </summary>
 public int this[string s]
         {
-            get { return 0; }
+            get {
+                if (dependees.ContainsKey(s))
+                {
+                    return dependees[s].Count;
+                }
+                return 0;
+            }
         }
         /// <summary>
         /// Reports whether dependents(s) is non-empty.
         /// </summary>
         public bool HasDependents(string s)
         {
+            if (dependents.ContainsKey(s))
+            {
+                if (dependents[s].Count < 1)
+                {
+                    return false;
+                }
+                return true;
+            }
             return false;
         }
         /// <summary>
@@ -84,6 +100,14 @@ public int this[string s]
         /// </summary>
         public bool HasDependees(string s)
         {
+            if (dependees.ContainsKey(s))
+            {
+                if (dependees[s].Count < 1)
+                {
+                    return false;
+                }
+                return true;
+            }
             return false;
         }
         /// <summary>
@@ -91,14 +115,22 @@ public int this[string s]
         /// </summary>
         public IEnumerable<string> GetDependents(string s)
         {
-            return null;
+            if (dependents.ContainsKey(s))
+            {
+                return new List<string>(dependents[s]);
+            }
+            return new List<string>();
         }
         /// <summary>
         /// Enumerates dependees(s).
         /// </summary>
         public IEnumerable<string> GetDependees(string s)
         {
-            return null;
+            if (dependees.ContainsKey(s))
+            {
+                return new List<string>(dependees[s]);
+            }
+            return new List<string>(); ;
         }
         /// <summary>
         /// <para>Adds the ordered pair (s,t), if it doesn't exist</para>
@@ -112,7 +144,39 @@ public int this[string s]
         /// <param name="t"> t cannot be evaluated until s is</param> ///
         public void AddDependency(string s, string t)
         {
+            if (dependents.ContainsKey(t)&&dependees.ContainsKey(s))
+            {
+                if (!dependents[s].Contains(t))
+                {
+                    dependents[s].Add(t);
+                    dependees[t].Add(s);
+                    size++;
+                }
+            else if (dependents.ContainsKey(s) && !dependees.ContainsKey(t))
+                {
+                  dependees.Add(t,new List<string>());
+                  dependees[t].Add(s);
+                  dependents[s].Add(t);
+                    size++;
+                }
+            else if (!dependents.ContainsKey(s) && dependees.ContainsKey(t))
+                {
+                    dependents.Add(s, new List<string>());
+                    dependents[s].Add(t);
+                    dependees[t].Add(s);
+                    size++;
+                }
+            }
+            else if (!dependents.ContainsKey(s) && !dependees.ContainsKey(t))
+            {
+                dependents.Add(s, new List<string>());
+                dependents[s].Add(t);
+                dependees.Add(t, new List<string>());
+                dependees[t].Add(s);
+                size++;
+            }
         }
+    
         /// <summary>
         /// Removes the ordered pair (s,t), if it exists
         /// </summary>
@@ -120,6 +184,20 @@ public int this[string s]
         /// <param name="t"></param>
         public void RemoveDependency(string s, string t)
         {
+            if(dependents.ContainsKey(s) && dependees.ContainsKey(t))
+            {
+                dependents[s].Remove(t); 
+                dependees[t].Remove(s);
+                if (dependees[t].Count == 0)
+                {
+                    dependees.Remove(t);
+                }
+                if (dependents[s].Count == 0)
+                {
+                    dependents.Remove(s);
+                }
+                size--;
+            }
         }
         /// <summary>
         /// Removes all existing ordered pairs of the form (s,r). Then, for each
@@ -127,6 +205,7 @@ public int this[string s]
         /// </summary>
         public void ReplaceDependents(string s, IEnumerable<string> newDependents)
         {
+
         }
         /// <summary>
         /// Removes all existing ordered pairs of the form (r,s). Then, for each
@@ -134,6 +213,7 @@ public int this[string s]
         /// </summary>
         public void ReplaceDependees(string s, IEnumerable<string> newDependees)
         {
+
         }
     }
 }
