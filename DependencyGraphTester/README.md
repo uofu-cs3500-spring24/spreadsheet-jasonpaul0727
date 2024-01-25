@@ -15,6 +15,6 @@ I also create few complex tests in final.
 
 # Consulted Peers:
 
-YiChong Chen
-PeiYi Hu
+YiChong Chen;
+PeiYi Hu;
 Shay Xia
