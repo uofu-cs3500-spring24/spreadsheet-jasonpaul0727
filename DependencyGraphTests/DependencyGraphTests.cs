@@ -105,7 +105,7 @@ namespace DevelopmentTests
             t.ReplaceDependees("y", new HashSet<string>());
         }
         /// <summary>
-        ///Replace on  DG shouldn't fail
+        ///Replace on  DG and check the size 
         ///</summary>
         [TestMethod()]
         public void ReplaceTest()
