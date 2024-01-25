@@ -63,8 +63,10 @@ namespace SpreadsheetUtilities
         /// <summary>
         /// Creates an empty DependencyGraph.
         /// </summary>
+        /// dependent are store the first value of pair, and dependee is the second value of of pair are storing in the dependee
         private Dictionary<string, HashSet<string>> dependents;
         private Dictionary<string, HashSet<string>> dependees;
+        // size is how many pair in graph 
         private int size;
         public DependencyGraph()
         {
