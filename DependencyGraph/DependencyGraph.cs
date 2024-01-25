@@ -120,10 +120,7 @@ namespace SpreadsheetUtilities
             // if dependents dictionary in s index has value and it not empty return true 
             if (dependees.ContainsKey(s))
             {
-                if (dependees[s].Count < 1)
-                {
-                    return false;
-                }
+               
                 return true;
             }
             // otherwise return false 

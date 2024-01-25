@@ -16,6 +16,7 @@ This formula evaluator is designed to extract mathematical results from expressi
 
 # Time Expenditures:
 
-    1. Assignment One:   Predicted Hours:          10       Actual Hours:   4
-    2. Assignment Two:   Predicted Hours:          15       Actual Hours:   4
-        2. Assignment Two:   Predicted Hours:      16       Actual Hours:   Null
+    Hours Estimated/Worked         Assignment                     
+          4   /   10    - Assignment 1 - Formula Evaluator     
+         6    /   15    - Assignment 2 - Dependency Graph     
+        Null  /   15    - Assignment 3  

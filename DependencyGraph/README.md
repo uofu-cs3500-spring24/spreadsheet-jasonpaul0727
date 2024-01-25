@@ -19,6 +19,6 @@ PeiYi Hu
 Shay Xia
 # References:
 
-    1. Regex class- https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=net-8.0
-    2. Pop function in a stack - https://stackoverflow.com/questions/50221785/pop-function-in-a-stack-c
+    1. IEnumerable Interface- https://learn.microsoft.com/en-us/dotnet/api/system.collections.ienumerable?view=net-8.0
+    2. IEnumerable C# example -https://www.c-sharpcorner.com/UploadFile/0c1bb2/ienumerable-interface-in-C-Sharp/
     3. C# Foreach Loop - https://www.w3schools.com/cs/cs_foreach_loop.php
