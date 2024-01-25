@@ -53,9 +53,19 @@ namespace DevelopmentTests
             t.AddDependency("x", "y");
             t.AddDependency("x", "z");
             Assert.IsTrue(t.HasDependees("z"));
+            Assert.IsFalse(t.HasDependees("p"));
+            Assert.AreEqual(0, t["x"]);
+            Assert.AreEqual(1, t["y"]);
         }
-
+        /// <summary>
+        ///Empty graph should contain nothing
+        ///</summary>
         [TestMethod()]
+        public void SimpleHasDependentsFalse(){
+            DependencyGraph t = new DependencyGraph();
+            Assert.IsFalse(t.HasDependents("p"));
+        }
+            [TestMethod()]
         public void SimpleHasDependentsTest()
         {
             DependencyGraph t = new DependencyGraph();
@@ -93,6 +103,24 @@ namespace DevelopmentTests
             t.RemoveDependency("x", "y");
             t.ReplaceDependents("x", new HashSet<string>());
             t.ReplaceDependees("y", new HashSet<string>());
+        }
+        /// <summary>
+        ///Replace on  DG shouldn't fail
+        ///</summary>
+        [TestMethod()]
+        public void ReplaceTest()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("x", "y");
+            t.AddDependency("x", "z");
+            t.AddDependency("x", "f");
+            t.AddDependency("x", "g");
+            t.AddDependency("g", "y");
+            t.RemoveDependency("x", "y");
+            t.ReplaceDependents("y", new HashSet<string>() { "l","p"});
+            t.ReplaceDependees("j", new HashSet<string>() { "t", "q" });
+            Assert.AreEqual(2,t.GetDependents("y").Count());
+            Assert.AreEqual(2,t.GetDependees("j").Count());
         }
         ///<summary>
         ///It should be possibe to have more than one DG at a time.
