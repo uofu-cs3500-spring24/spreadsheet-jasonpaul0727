@@ -26,38 +26,36 @@ namespace SpreadsheetUtilities
 {
     /// <summary>
     /// Represents formulas written in standard infix notation using standard
-   /// precedence
+    /// precedence
     /// rules. The allowed symbols are non-negative numbers written using double-
-   /// precision
+    /// precision
     /// floating-point syntax (without unary preceeding '-' or '+');
     /// variables that consist of a letter or underscore followed by
     /// zero or more letters, underscores, or digits; parentheses; and the fouroperator
     /// symbols +, -, *, and /.
-///
-/// Spaces are significant only insofar that they delimit tokens. For example,
-///"xy" is
-/// a single variable, "x y" consists of two variables "x" and y; "x23" is a
-///single variable;
+    ///
+    /// Spaces are significant only insofar that they delimit tokens. For example,
+    ///"xy" is
+    /// a single variable, "x y" consists of two variables "x" and y; "x23" is a
+    ///single variable;
     /// and "x 23" consists of a variable "x" and a number "23".
     ///
     /// Associated with every formula are two delegates: a normalizer and a
-   /// validator.The
-/// normalizer is used to convert variables into a canonical form, and the
-///validator is used
-/// to add extra restrictions on the validity of a variable (beyond the standard
-///requirement
-/// that it consist of a letter or underscore followed by zero or more letters,
-///underscores,
-/// or digits.) Their use is described in detail in the constructor and method
-///comments.
-/// </summary>
-public class Formula
-{
-        String formula;
-        HashSet<string> variableList;
-        /// <summary>
-        /// Creates a Formula from a string that consists of an infix expression
-        ///written as
+    /// validator.The
+    /// normalizer is used to convert variables into a canonical form, and the
+    ///validator is used
+    /// to add extra restrictions on the validity of a variable (beyond the standard
+    ///requirement
+    /// that it consist of a letter or underscore followed by zero or more letters,
+    ///underscores,
+    /// or digits.) Their use is described in detail in the constructor and method
+    ///comments.
+    /// </summary>
+    public class Formula
+    {
+
+        String output;
+        HashSet<string> variableList = new HashSet<string>();
         /// described in the class comment. If the expression is syntactically
         ///invalid,
         /// throws a FormulaFormatException with an explanatory Message.
@@ -69,6 +67,7 @@ public class Formula
         public Formula(String formula) :
         this(formula, s => s, s => true)
         {
+
         }
 
         /// <summary>
@@ -105,36 +104,39 @@ public class Formula
             int leftParaCount = 0;
             int rightParaCount = 0;
             double result;
-            if (token.Count < 1 && !((variableCheck(token[0]) || double.TryParse(token[0], out result) || token[0] != "("))
-            && !((variableCheck(token[token.Count - 1]) || double.TryParse(token[token.Count - 1], out result) || token[token.Count - 1] != ")")))
-            {
+            String opPattern = @"[\+\-*/]";          
+            if (token.Count < 1 ||(variableCheck(token[0])==false&&(double.TryParse(token[0], out result))==false && token[0] != "(")){
                 throw new FormulaFormatException("the formula less than 1 ");
+            }
+            if (token.Count > 1)
+            {
+                if (variableCheck(token[token.Count - 1]) == false && !double.TryParse(token[token.Count - 1], out double test) && token[token.Count - 1] != ")")
+                {
+                    throw new FormulaFormatException("last element error ");
+                }
             }
             for (int index = 0; index < token.Count; index++)
             {
                 {
+                    if ((variableCheck(token[index]) || double.TryParse(token[index], out result))&& token.Count==1)
+                    {
+                        break;
+                    }
                     if (variableCheck(token[index]) || double.TryParse(token[index], out result) || token[index] != "(" || token[index] != ")" || token[index] != "+" || token[index] != "-" || token[index] != "*" || token[index] != "/")
                     {
-                        if (token[index] == ")")
+                         if (token[index] == "("|| token[index] == "+" || token[index] == "-" || token[index] == "*" || token[index] == "/")
                         {
-                            rightParaCount++;
-                        }
-                        else if (token[index] == "(")
-                        {
-                            if (!(variableCheck(token[index + 1]) || double.TryParse(token[index + 1], out result)))
+
+                            if (variableCheck(token[index + 1])==false &&double.TryParse(token[index + 1], out result)==false&&token[index + 1] != "(")
                             {
                                 throw new FormulaFormatException("format error ");
                             }
-                            leftParaCount++;
-                        }
-                        else if (variableCheck(token[index]) || double.TryParse(token[index], out result) || token[index] != ")")
-                        {
-                            if (token[index + 1] != "+" || token[index + 1] != "-" || token[index + 1] != "*" || token[index + 1] != "/" || token[index + 1] != ")")
+                            if (token[index] == "(")
                             {
-                                throw new FormulaFormatException("format error ");
+                                leftParaCount++;
                             }
                         }
-                        else if (variableCheck(token[index]) || double.TryParse(token[index], out result))
+                        else if ((variableCheck(token[index]) || double.TryParse(token[index], out result)) || token[index] == ")")
                         {
                             if (variableCheck(token[index]))
                             {
@@ -143,35 +145,43 @@ public class Formula
                                     throw new FormulaFormatException("format error ");
                                 }
                             }
-                        }
-                        else
-                        {
-                            throw new FormulaFormatException("the formula less than 1 ");
+                            if (index != token.Count - 1&&(variableCheck(token[index + 1]) || double.TryParse(token[index + 1], out result)) )
+                            {
+                                throw new FormulaFormatException("format error ");
+                            }
+                            if (token[index] == ")")
+                            {
+                                rightParaCount++;
+                            }
                         }
                     }
-                        if (leftParaCount != rightParaCount )
-                        {
-                        throw new FormulaFormatException("parathesis not equal ");
-                        }
+                    else
+                    {
+                        throw new FormulaFormatException("format error ");
+                    }
                 }
             }
-                foreach( string s in token){
+            if (leftParaCount != rightParaCount)
+            {
+                throw new FormulaFormatException("parathesis not equal ");
+            }
+            foreach (string s in token) {
                 if (variableCheck(s))
                 {
-                    formula += normalize(s);
+                    output += normalize(s);
                     variableList.Add(s);
                 }
-                else if(double.TryParse(s, out result))
+                else if (double.TryParse(s, out double r))
                 {
-                    formula += result;
+                    output += r;
                 }
                 else
                 {
-                    formula += s;
+                    output += s;
                 }
             }
         }
-           
+
         /// <summary>
         /// Evaluates this Formula, using the lookup delegate to determine the values of
         /// variables. When a variable symbol v needs to be determined, it should be looked up
@@ -193,13 +203,13 @@ public class Formula
         ///
         /// This method should never throw an exception.
         /// </summary>
-        
+
 
         public object Evaluate(Func<string, double> lookup)
         {   // create 2 stack one store value, another one store operator
             Stack<double> value_Stack = new Stack<double>();
             Stack<string> operator_Stack = new Stack<string>();
-            List<string> token = new List<string>(GetTokens(formula));
+            List<string> token = new List<string>(GetTokens(output));
             int count_Left_Parentheis = 0;
             foreach (string i in token)
             {
@@ -215,7 +225,7 @@ public class Formula
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
                         //find the resukt after multiplication or division
-                       double result=(multiOrdivide(value_Stack.Peek(), number, value_Stack, operator_Stack));
+                        double result = (multiOrdivide(value_Stack.Peek(), number, value_Stack, operator_Stack));
                         value_Stack.Pop();
                         value_Stack.Push(result);
                     }
@@ -297,7 +307,7 @@ public class Formula
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
                         // find the result for multiplication or division 
-                        double result = multiOrdivide(value_Stack.Peek(),lookup(i), value_Stack, operator_Stack);
+                        double result = multiOrdivide(value_Stack.Peek(), lookup(i), value_Stack, operator_Stack);
                         value_Stack.Pop();
                         value_Stack.Push(result);
                     }
@@ -362,7 +372,7 @@ public class Formula
         public static double multiOrdivide(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             // check the value 
-            if(zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
+            if (zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
             {
                 return double.MaxValue;
             }
@@ -402,14 +412,17 @@ public class Formula
         /// <param name="s"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static bool variableCheck(string s)
-        {
-            if (Regex.IsMatch(s, @"[a-zA-Z_$]+[0-9]+$") == false)
+        public static bool variableCheck(string s) {
+            if (s!="+" && s!= "-"&& s != "*"&& s != "/"&&(!double.TryParse(s,out double d))&& s != "(" && s != ")" )
             {
-                throw new ArgumentException("wrong type of variable");
-            }
 
-            return true;
+                if (Regex.IsMatch(s, @"[a-zA-Z_$]+[0-9]+$") == false)
+                {
+                    throw new FormulaFormatException("wrong type of variable");
+                }
+                else { return true; }
+            }
+            return false;
         }
         /// <summary>
         /// This function is add or minus method
@@ -476,7 +489,7 @@ public class Formula
         /// </summary>
         public override string ToString()
         {
-            return formula;
+            return output;
         }
         /// <summary>
         /// <change> make object nullable </change>
