@@ -147,7 +147,7 @@ namespace SpreadsheetUtilities
             for (int index = 0; index < token.Count; index++)
             {
                 // thorw out wrong variable format or wrong operator 
-                if (variableCheck(token[index]) || double.TryParse(token[index], out result) || formatCheck(token[index], opPattern) || token[index] == "(" || token[index] == ")")
+                if (!variableCheck(token[index]) || variableCheck(token[index]))
                 {
                     // check the string is operator or left parathesis and throw the edge case or operation
                     if (token[index] == "(" || formatCheck(token[index], opPattern))
@@ -182,12 +182,6 @@ namespace SpreadsheetUtilities
                             rightParaCount++;
                         }
                     }
-                }
-                /// 
-                // if we have wrong format we will throw the formula format exception 
-                else
-                {
-                    throw new FormulaFormatException("format error ");
                 }
             }
             // wrong parathesis format 
@@ -233,8 +227,6 @@ namespace SpreadsheetUtilities
         ///
         /// This method should never throw an exception.
         /// </summary>
-
-
         public object Evaluate(Func<string, double> lookup)
         {   // create 2 stack one store value, another one store operator
             Stack<double> value_Stack = new Stack<double>();
@@ -274,10 +266,6 @@ namespace SpreadsheetUtilities
                                 value_Stack.Push(result);
                             }
                         }
-                        else
-                        {
-                            return new FormulaError("wrong format");
-                        }
                     }
                     // add to the stack
                     operator_Stack.Push(i); ;
@@ -298,10 +286,6 @@ namespace SpreadsheetUtilities
                 {
                     if (operator_Stack.Peek() == "+" || (operator_Stack.Peek() == "-"))
                     {
-                        if (!lessThan2(value_Stack))
-                        {
-                            return new FormulaError("wrong format");
-                        }
                         value_Stack.Push(addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack));
                     }
                     if (count_Left_Parentheis != 0)
@@ -309,18 +293,10 @@ namespace SpreadsheetUtilities
                         operator_Stack.Pop();
                         count_Left_Parentheis--;
                     }
-                    // throw the catch for wrong format 
-                    else
-                    {
-                        return new FormulaError("wrong format");
-                    }
+
                     // checking the wheather it is wheather  it is "/" or "+"
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
-                        if (!lessThan2(value_Stack))
-                        {
-                            return new FormulaError("wrong format");
-                        }
                         value_Stack.Push(multiOrdivide(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack));
                     }
                     continue;
@@ -331,18 +307,10 @@ namespace SpreadsheetUtilities
                     // check it is divide or not
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
-                        // find the result for multiplication or division 
-                        try
-                        {
+                        // find the result for multiplication or division                  
                             double result = multiOrdivide(value_Stack.Peek(), lookup(i), value_Stack, operator_Stack);
                             value_Stack.Pop();
                             value_Stack.Push(result);
-                        }
-
-                        catch
-                        {
-                            return new FormulaError("wrong format");
-                        }
                     }
                     else
                     // check variable type 
@@ -358,15 +326,10 @@ namespace SpreadsheetUtilities
                         }
                     }
                 }
-
             }
             // after calculation we have two condition one it's no stack in operator and one value in value stack 
             if (operator_Stack.Count == 0)
             {
-                if (value_Stack.Count != 1)
-                {
-                    return new FormulaError("wrong format");
-                }
                 double result = value_Stack.Pop();
                 return checkError(result);
             }
@@ -452,7 +415,6 @@ namespace SpreadsheetUtilities
                 }
             }
             return false;
-
         }
         /// <summary>
         ///This function is  use regex to check it is variable type or not
@@ -491,35 +453,13 @@ namespace SpreadsheetUtilities
         /// <double></returns>
         public static double addOrminus(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
-            // check the symbol in stack is  plus or minus 
-            if (operator_Stack.Peek() == "+" || operator_Stack.Peek() == "-" && !zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
+            if (operator_Stack.Pop() == "+")
             {
-                // if it is +
-                if (operator_Stack.Pop() == "+")
-                {
-                    return first_Value + second_Value;
-                }
-                else
-                {
-                    return second_Value - first_Value;
-                }
-                // return the max value which mean this formula is wrong type such as wrong symbol o rformat and will return formula error 
+                return first_Value + second_Value;
             }
-            return double.MaxValue;
+            return second_Value - first_Value;
         }
-        /// <summary>
-        /// This function is check the value stack less than 2 or not
-        /// </summary>
-        /// <param name="value_Stack"></param>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool lessThan2(Stack<double> value_Stack)
-        {
-            if (value_Stack.Count < 2)
-            {
-                return false;
-            }
-            return true;
-        }
+
         /// <summary>
         /// Enumerates the normalized versions of all of the variables that occur in this
         /// formula. No normalization may appear more than once in the enumeration,even
@@ -586,12 +526,8 @@ namespace SpreadsheetUtilities
         ///
         /// </summary>
         public static bool operator ==(Formula f1, Formula f2)
-        {
-            if (f1.Equals(f2))
-            {
-                return true;
-            }
-            return false;
+        {  
+            return f1.Equals(f2);
         }
         /// <summary>
         /// <change> We are now using Non-Nullable objects. Thus neither f1 nor f2
@@ -603,11 +539,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public static bool operator !=(Formula f1, Formula f2)
         {
-            if (f1.Equals(f2))
-            {
-                return false;
-            }
-            return true;
+            return (!f1.Equals(f2));
         }
         /// <summary>
         /// Returns a hash code for this Formula. If f1.Equals(f2), then it must be
