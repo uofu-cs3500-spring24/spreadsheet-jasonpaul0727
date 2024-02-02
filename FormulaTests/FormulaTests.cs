@@ -183,13 +183,15 @@ namespace FormulaTests
             Assert.IsTrue(f1.GetHashCode() == f2.GetHashCode());
         }
         /// <summary>
-        /// test for hashcode
+        /// test for  equal method
         /// </summary>
         [TestMethod()]
         public void equalsNon()
         {
             Formula f1 = new Formula("2");
-            Assert.IsFalse(Equals(null));
+            Formula f2 = new Formula("2");
+            Assert.IsFalse(f1.Equals(null));
+            Assert.IsTrue(f1.Equals(f2));
         }
 
         /// <summary>
@@ -230,7 +232,7 @@ namespace FormulaTests
         public void formatError1()
         {
             Formula f = new Formula("1+x5");
-            Assert.IsInstanceOfType(f.Evaluate(s => {throw new ArgumentException("-wrong variable type");}), typeof(FormulaError));
+            Assert.IsInstanceOfType(f.Evaluate(s => { throw new ArgumentException("-wrong variable type"); }), typeof(FormulaError));
         }
         /// <summary>
         /// test wrong case format for evaluate

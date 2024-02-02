@@ -331,14 +331,14 @@ namespace SpreadsheetUtilities
             if (operator_Stack.Count == 0)
             {
                 double result = value_Stack.Pop();
-                return checkError(result);
+                return result;
             }
             // another condition it we need plus or minus final 2 answer 
             else if (value_Stack.Count != 2 || operator_Stack.Count != 1)
             {
                 return new FormulaError("wrong format");
             }
-            return checkError(addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack));
+            return addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
 
         }
         /// <summary>
@@ -357,20 +357,6 @@ namespace SpreadsheetUtilities
                 }
             }
             return false;
-        }
-        /// <summary>
-        /// check the whether result has error such as division zero or format error
-        /// </summary>
-        /// <param name="method"></param>
-        /// <objects></returns>
-        public static object checkError(double method)
-        {
-            // return error if bigger than max value of double
-            if (method >= double.MaxValue)
-            {
-                return new FormulaError("wrong format");
-            }
-            return method;
         }
         /// <summary>
         /// This function is the operation for multiplication or division
@@ -516,6 +502,7 @@ namespace SpreadsheetUtilities
         {
             Formula? str = obj as Formula;
             // else compare two string and equal.
+            if(ReferenceEquals(null,str))  return false;
             return str.ToString().Equals(ToString());
         }
         /// <summary>
