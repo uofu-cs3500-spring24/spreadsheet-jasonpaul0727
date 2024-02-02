@@ -2,8 +2,23 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using SpreadsheetUtilities;
-
-
+/// <summary>
+/// Author:    Yanxia Bu
+/// Partner:    No
+/// Date:     1/29/2024
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Yanxia Bu - This work may not 
+///            be copied for use in Academic Coursework.
+///
+/// I, Yanxia Bu, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All 
+/// references used in the completion of the assignments are cited 
+/// in my README file.
+/// 
+/// File Contents
+///
+///   Formula
+/// </summary>
 namespace FormulaTests
 {
     /// <summary>
