@@ -11,6 +11,23 @@
 // Change log:
 // (Version 1.2) Changed the definition of equality with regards
 // to numeric tokens
+/// <summary>
+/// Author:    Yanxia Bu
+/// Partner:    No
+/// Date:     1/28/2024
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Yanxia Bu - This work may not 
+///            be copied for use in Academic Coursework.
+///
+/// I, Yanxia Bu, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All 
+/// references used in the completion of the assignments are cited 
+/// in my README file.
+///
+/// File Contents
+///
+///   Formula
+/// </summary>
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -71,6 +88,7 @@ namespace SpreadsheetUtilities
         }
 
         /// <summary>
+        /// /// <summary>
         /// Creates a Formula from a string that consists of an infix expression
         ///written as
         /// described in the class comment. If the expression is syntactically
@@ -96,80 +114,92 @@ namespace SpreadsheetUtilities
         /// new Formula("x2+y3", N, V) should succeed
         /// new Formula("x+y3", N, V) should throw an exception, since V(N("x")) is false
         /// new Formula("2x+y3", N, V) should throw an exception, since "2x+y3" is syntactically incorrect.
+        ///create the constructor for checking formulas' format 
         /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="normalize"></param>
+        /// <param name="isValid"></param>
+        /// <exception cref="FormulaFormatException"></exception>
         public Formula(String formula, Func<string, string> normalize, Func<string,
         bool> isValid)
         {
+            ///create the token for getting the data of string and create left and right parameter count 
             List<string> token = new List<string>(GetTokens(formula));
             int leftParaCount = 0;
             int rightParaCount = 0;
+            // getting the out result for parsing double type
             double result;
-            String opPattern = @"[\+\-*/]";          
-            if (token.Count < 1 ||(variableCheck(token[0])==false&&(double.TryParse(token[0], out result))==false && token[0] != "(")){
+            // check the  format pattern for checking the string format of operrator
+            String opPattern = @"[\+\-*/]";      
+            // thorw out empty case
+            if (token.Count < 1 ){
                 throw new FormulaFormatException("the formula less than 1 ");
             }
-            if (token.Count > 1)
+            // check the edge case 
+            if (token.Count >= 1)
             {
                 if (variableCheck(token[token.Count - 1]) == false && !double.TryParse(token[token.Count - 1], out double test) && token[token.Count - 1] != ")")
                 {
                     throw new FormulaFormatException("last element error ");
                 }
             }
+            // start looping formula
             for (int index = 0; index < token.Count; index++)
             {
+                // thorw out wrong variable format or wrong operator 
+                if (variableCheck(token[index]) || double.TryParse(token[index], out result) || formatCheck(token[index], opPattern) || token[index] == "(" || token[index] == ")")
                 {
-                    if ((variableCheck(token[index]) || double.TryParse(token[index], out result))&& token.Count==1)
+                    // check the string is operator or left parathesis and throw the edge case or operation
+                    if (token[index] == "(" || formatCheck(token[index], opPattern))
                     {
-                        break;
-                    }
-                    if (variableCheck(token[index]) || double.TryParse(token[index], out result) || token[index] != "(" || token[index] != ")" || token[index] != "+" || token[index] != "-" || token[index] != "*" || token[index] != "/")
-                    {
-                         if (token[index] == "("|| token[index] == "+" || token[index] == "-" || token[index] == "*" || token[index] == "/")
+                        if (!variableCheck(token[index + 1]) && !double.TryParse(token[index + 1], out result) && token[index + 1] != "(")
                         {
-
-                            if (variableCheck(token[index + 1])==false &&double.TryParse(token[index + 1], out result)==false&&token[index + 1] != "(")
+                            throw new FormulaFormatException("format error ");
+                        }
+                        if (token[index] == "(")
+                        {
+                            leftParaCount++;
+                        }
+                    }
+                    // check the string is variable or integer or right parathesis and throw the edge case or doing operation
+                    else if ((variableCheck(token[index]) || double.TryParse(token[index], out result)) || token[index] == ")")
+                    {
+                        if (variableCheck(token[index]))
+                        {
+                            // wrong type of variable 
+                            if (!isValid(normalize(token[index])))
                             {
                                 throw new FormulaFormatException("format error ");
                             }
-                            if (token[index] == "(")
-                            {
-                                leftParaCount++;
-                            }
                         }
-                        else if ((variableCheck(token[index]) || double.TryParse(token[index], out result)) || token[index] == ")")
+                        // throw the edge case if have another variable or integer
+                        else if (index != token.Count - 1 && (variableCheck(token[index + 1]) || double.TryParse(token[index + 1], out result)))
                         {
-                            if (variableCheck(token[index]))
-                            {
-                                if (!isValid(normalize(token[index])))
-                                {
-                                    throw new FormulaFormatException("format error ");
-                                }
-                            }
-                            if (index != token.Count - 1&&(variableCheck(token[index + 1]) || double.TryParse(token[index + 1], out result)) )
-                            {
-                                throw new FormulaFormatException("format error ");
-                            }
-                            if (token[index] == ")")
-                            {
-                                rightParaCount++;
-                            }
+                            throw new FormulaFormatException("format error ");
                         }
-                    }
-                    else
-                    {
-                        throw new FormulaFormatException("format error ");
+                        else if (token[index] == ")")
+                        {
+                            rightParaCount++;
+                        }
                     }
                 }
+                // if we have wrong format we will throw the formula format exception 
+                else
+                {
+                    throw new FormulaFormatException("format error ");
+                }
             }
+            // wrong parathesis format 
             if (leftParaCount != rightParaCount)
             {
                 throw new FormulaFormatException("parathesis not equal ");
             }
+            // add the token to output string 
             foreach (string s in token) {
                 if (variableCheck(s))
                 {
                     output += normalize(s);
-                    variableList.Add(s);
+                    variableList.Add(normalize(s));
                 }
                 else if (double.TryParse(s, out double r))
                 {
@@ -181,7 +211,6 @@ namespace SpreadsheetUtilities
                 }
             }
         }
-
         /// <summary>
         /// Evaluates this Formula, using the lookup delegate to determine the values of
         /// variables. When a variable symbol v needs to be determined, it should be looked up
@@ -213,11 +242,6 @@ namespace SpreadsheetUtilities
             int count_Left_Parentheis = 0;
             foreach (string i in token)
             {
-                // because of the first one is empty which I need use if to skip it.
-                if (i == "")
-                {
-                    continue;
-                }
                 // I use tryparse to identify it is integer or not
                 if ((int.TryParse(i, out int number)) == true)
                 {
@@ -307,13 +331,30 @@ namespace SpreadsheetUtilities
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
                         // find the result for multiplication or division 
-                        double result = multiOrdivide(value_Stack.Peek(), lookup(i), value_Stack, operator_Stack);
-                        value_Stack.Pop();
-                        value_Stack.Push(result);
+                        try
+                        {
+                            double result = multiOrdivide(value_Stack.Peek(), lookup(i), value_Stack, operator_Stack);
+                            value_Stack.Pop();
+                            value_Stack.Push(result);
+                        }
+
+                        catch
+                        {
+                            return new FormulaError("wrong format");
+                        }
                     }
                     else
+                    // check variable type 
                     {
-                        value_Stack.Push(lookup(i));
+                        try
+                        {
+                            value_Stack.Push(lookup(i));
+                        }
+                        catch
+                        {
+                            return new FormulaError("wrong format");
+      
+                        }
                     }
                 }
 
@@ -341,7 +382,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         /// <param name="value_Stack"></param>
         /// <param name="operator_Stack"></param>
-        /// <returns></returns>
+        /// <bool></returns>
         public static bool checkMultiOrDivideOperator(Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             if (operator_Stack.Count() >= 1)
@@ -353,8 +394,14 @@ namespace SpreadsheetUtilities
             }
             return false;
         }
+        /// <summary>
+        /// check the whether result has error such as division zero or format error
+        /// </summary>
+        /// <param name="method"></param>
+        /// <objects></returns>
         public static object checkError(double method)
         {
+            // return error if bigger than max value of double
             if (method >= double.MaxValue)
             {
                 return new FormulaError("wrong format");
@@ -371,7 +418,7 @@ namespace SpreadsheetUtilities
         /// <returns></returns>
         public static double multiOrdivide(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
-            // check the value 
+            // check the value if is wrong type division we will return the double max value which will return formula error later
             if (zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
             {
                 return double.MaxValue;
@@ -400,10 +447,10 @@ namespace SpreadsheetUtilities
             {
                 if (value_Stack.Count == 0 || second_Value == 0)
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
 
         }
         /// <summary>
@@ -415,8 +462,7 @@ namespace SpreadsheetUtilities
         public static bool variableCheck(string s) {
             if (s!="+" && s!= "-"&& s != "*"&& s != "/"&&(!double.TryParse(s,out double d))&& s != "(" && s != ")" )
             {
-
-                if (Regex.IsMatch(s, @"[a-zA-Z_$]+[0-9]+$") == false)
+                if (Regex.IsMatch(s, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*") == false)
                 {
                     throw new FormulaFormatException("wrong type of variable");
                 }
@@ -425,17 +471,27 @@ namespace SpreadsheetUtilities
             return false;
         }
         /// <summary>
+        ///This function is  use regex to check it is variable type or not
+        /// </summary>
+        /// <param name="s"></param>
+        /// <bool></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static bool formatCheck(string s, string regexPattern)
+        {
+            return (Regex.IsMatch(s, regexPattern) && !double.TryParse(s, out double test)); 
+        }
+        /// <summary>
         /// This function is add or minus method
         /// </summary>
         /// <param name="first_Value"></param>
         /// <param name="second_Value"></param>
         /// <param name="value_Stack"></param>
         /// <param name="operator_Stack"></param>
-        /// <returns></returns>
+        /// <double></returns>
         public static double addOrminus(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             // check the symbol in stack is  plus or minus 
-            if (operator_Stack.Peek() == "+" || operator_Stack.Peek() == "-" && zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
+            if (operator_Stack.Peek() == "+" || operator_Stack.Peek() == "-" && !zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
             {
                 // if it is +
                 if (operator_Stack.Pop() == "+")
@@ -446,6 +502,7 @@ namespace SpreadsheetUtilities
                 {
                     return second_Value - first_Value;
                 }
+                // return the max value which mean this formula is wrong type such as wrong symbol o rformat and will return formula error 
             }
             return double.MaxValue;
         }
@@ -513,15 +570,12 @@ namespace SpreadsheetUtilities
         /// new Formula("x1+y2").Equals(new Formula("y2+x1")) is false
         /// new Formula("2.0 + x7").Equals(new Formula("2.000 + x7")) is true
         /// </summary>
+
         public override bool Equals(object? obj)
         {
             Formula? str = obj as Formula;
-             if (ReferenceEquals(null, str))
-              {
-                    return false;
-              }
             // else compare two string and equal.
-            return str.ToString() == ToString();
+            return str.ToString().Equals(ToString());
         }
         /// <summary>
         /// <change> We are now using Non-Nullable objects. Thus neither f1 nor f2
@@ -530,25 +584,25 @@ namespace SpreadsheetUtilities
         ///method.
         ///
         /// </summary>
-     public static bool operator ==(Formula f1, Formula f2)
-     {
-            if (f1.Equals(f2) && ReferenceEquals(null, f2))
+        public static bool operator ==(Formula f1, Formula f2)
+        {
+            if (f1.Equals(f2))
             {
                 return true;
             }
             return false;
-     }
+        }
         /// <summary>
         /// <change> We are now using Non-Nullable objects. Thus neither f1 nor f2
-       /// can be null!</change>
-/// <change> Note: != should almost always be not ==, if you get my meaning
-///</change>
-/// Reports whether f1 != f2, using the notion of equality from the Equals
-///method.
-/// </summary>
+        /// can be null!</change>
+        /// <change> Note: != should almost always be not ==, if you get my meaning
+        ///</change>
+        /// Reports whether f1 != f2, using the notion of equality from the Equals
+        ///method.
+        /// </summary>
         public static bool operator !=(Formula f1, Formula f2)
         {
-            if (f1.Equals(f2) && ReferenceEquals(null, f2))
+            if (f1.Equals(f2))
             {
                 return false;
             }
