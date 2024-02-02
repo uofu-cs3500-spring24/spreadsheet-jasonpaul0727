@@ -183,6 +183,7 @@ namespace SpreadsheetUtilities
                         }
                     }
                 }
+                /// 
                 // if we have wrong format we will throw the formula format exception 
                 else
                 {
