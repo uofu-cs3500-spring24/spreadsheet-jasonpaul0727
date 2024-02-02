@@ -230,7 +230,7 @@ namespace FormulaTests
         public void formatError1()
         {
             Formula f = new Formula("1+x5");
-            Assert.IsInstanceOfType(f.Evaluate(s => {throw new ArgumentException("Unknown variable");}), typeof(FormulaError));
+            Assert.IsInstanceOfType(f.Evaluate(s => {throw new ArgumentException("-wrong variable type");}), typeof(FormulaError));
         }
         /// <summary>
         /// test wrong case format for evaluate
