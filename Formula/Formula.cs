@@ -72,7 +72,7 @@ namespace SpreadsheetUtilities
     {
 
         String output;
-        HashSet<string> variableList = new HashSet<string>();
+        HashSet<string> variableLset = new HashSet<string>();
         /// described in the class comment. If the expression is syntactically
         ///invalid,
         /// throws a FormulaFormatException with an explanatory Message.
@@ -194,7 +194,7 @@ namespace SpreadsheetUtilities
                 if (variableCheck(s))
                 {
                     output += normalize(s);
-                    variableList.Add(normalize(s));
+                    variableLset.Add(normalize(s));
                 }
                 else if (double.TryParse(s, out double r))
                 {
@@ -459,7 +459,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public IEnumerable<String> GetVariables()
         {
-            return variableList;
+            return variableLset;
         }
         /// <summary>
         /// Returns a string containing no spaces which, if passed to the Formula

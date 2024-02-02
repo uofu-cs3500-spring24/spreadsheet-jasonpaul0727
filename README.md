@@ -20,4 +20,4 @@ This formula  is a more generalized version of your FormulaEvaluator work, it co
           4    /   10    - Assignment 1 - Formula Evaluator     
           6    /   15    - Assignment 2 - Dependency Graph     
           13   /    15   - Assignment 3 - formula
-         Null  /   12   - Assignment 4 - 
+         Null  /   12   - Assignment 4 -  Onward to spreadsheet
