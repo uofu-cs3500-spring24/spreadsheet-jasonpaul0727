@@ -347,7 +347,7 @@ namespace SpreadsheetUtilities
         /// <param name="value_Stack"></param>
         /// <param name="operator_Stack"></param>
         /// <bool></returns>
-        public static bool checkMultiOrDivideOperator(Stack<double> value_Stack, Stack<string> operator_Stack)
+        private static bool checkMultiOrDivideOperator(Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             if (operator_Stack.Count() >= 1)
             {
@@ -366,7 +366,7 @@ namespace SpreadsheetUtilities
         /// <param name="value_Stack"></param>
         /// <param name="operator_Stack"></param>
         /// <returns></returns>
-        public static double multiOrdivide(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
+        private static double multiOrdivide(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             // check the value if is wrong type division we will return the double max value which will return formula error later
             if (zeroOrEmpty(first_Value, second_Value, value_Stack, operator_Stack))
@@ -391,7 +391,7 @@ namespace SpreadsheetUtilities
         /// <param name="value_Stack"></param>
         /// <param name="operator_Stack"></param>
         /// <exception cref="ArgumentException"></exception>
-        public static bool zeroOrEmpty(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
+        private static bool zeroOrEmpty(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
             if (operator_Stack.Peek() == "/")
             {
@@ -408,7 +408,7 @@ namespace SpreadsheetUtilities
         /// <param name="s"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static bool variableCheck(string s) {
+        private static bool variableCheck(string s) {
             if (s!="+" && s!= "-"&& s != "*"&& s != "/"&&(!double.TryParse(s,out double d))&& s != "(" && s != ")" )
             {
                 if (Regex.IsMatch(s, @"[a-zA-Z_](?: [a-zA-Z_]|\d)*") == false)
@@ -425,7 +425,7 @@ namespace SpreadsheetUtilities
         /// <param name="s"></param>
         /// <bool></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static bool formatCheck(string s, string regexPattern)
+        private static bool formatCheck(string s, string regexPattern)
         {
             return (Regex.IsMatch(s, regexPattern) && !double.TryParse(s, out double test)); 
         }
