@@ -24,8 +24,9 @@
 /// references used in the completion of the assignments are cited 
 /// in my README file.
 ///
-/// File Contents
-///
+/// This is the class for calculate the spreadsheet which including the calculation of function in different format,it was only used once, returned a result, 
+/// and then it's "life was over". In a spreadsheet the formula in a given cell will be used over and over again, 
+/// as many times as the related cells are modified. 
 ///   Formula
 /// </summary>
 using System;
@@ -70,9 +71,8 @@ namespace SpreadsheetUtilities
     /// </summary>
     public class Formula
     {
-
-        String output;
-        HashSet<string> variableLset = new HashSet<string>();
+        private readonly String output;
+        private readonly HashSet<string> variableLset = new HashSet<string>();
         /// described in the class comment. If the expression is syntactically
         ///invalid,
         /// throws a FormulaFormatException with an explanatory Message.
@@ -84,9 +84,7 @@ namespace SpreadsheetUtilities
         public Formula(String formula) :
         this(formula, s => s, s => true)
         {
-
         }
-
         /// <summary>
         /// /// <summary>
         /// Creates a Formula from a string that consists of an infix expression
@@ -293,7 +291,6 @@ namespace SpreadsheetUtilities
                         operator_Stack.Pop();
                         count_Left_Parentheis--;
                     }
-
                     // checking the wheather it is wheather  it is "/" or "+"
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
                     {
@@ -322,7 +319,6 @@ namespace SpreadsheetUtilities
                         catch
                         {
                             return new FormulaError("wrong format");
-      
                         }
                     }
                 }
@@ -339,7 +335,6 @@ namespace SpreadsheetUtilities
                 return new FormulaError("wrong format");
             }
             return addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
-
         }
         /// <summary>
         /// This is helper method for checking wheather it is / or * sign

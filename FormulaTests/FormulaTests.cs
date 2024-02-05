@@ -15,7 +15,7 @@ using SpreadsheetUtilities;
 /// references used in the completion of the assignments are cited 
 /// in my README file.
 /// 
-/// File Contents
+/// This is the tester of the formula  I test every method include the tru case and bad case 
 ///
 ///   Formula
 /// </summary>
