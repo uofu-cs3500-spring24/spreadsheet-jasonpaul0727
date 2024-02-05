@@ -25,7 +25,7 @@ namespace FormulaTests
     /// this is tester class for formula 
     /// </summary>
     [TestClass]
-    public class PS3Tests()
+    public class FormulaTests()
     {
         // test Excepetion case first
         /// <summary>
