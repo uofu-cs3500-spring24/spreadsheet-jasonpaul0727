@@ -3,6 +3,7 @@ using SS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices.ObjectiveC;
@@ -54,11 +55,10 @@ namespace SS
         /// </summary>
         public override object GetCellContents(string name)
         {
-            try
+            if (!variableCheck(name))
             {
-                variableCheck(name);
+                throw new InvalidNameException();
             }
-            catch { throw new NotImplementedException(); }
             if (cells.ContainsKey(name))
             {
                 return cells[name].content;
@@ -74,7 +74,7 @@ namespace SS
             HashSet<string> cellSet = new HashSet<string>();
             foreach (string name in cells.Keys)
             {
-                if (cells.TryGetValue(name,out Cell? value) &&! ReferenceEquals(null, value))
+                if (cells.TryGetValue(name,out Cell? value) && value.content!="")
                 {
                     cellSet.Add(name);
                 }
@@ -154,8 +154,8 @@ namespace SS
             object n = GetCellContents(name);
             DG.ReplaceDependees(name, new HashSet<string>());
             Cell c = new Cell(name, text);
+             cells[name]= c;
             ISet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
-            DG.ReplaceDependees(name, new HashSet<string>());
             return cellSet;
         }
         /// <summary>
@@ -203,31 +203,37 @@ namespace SS
             }
             object old_Value = GetCellContents(name);
             HashSet<string> s = new HashSet<string>(DG.GetDependees(name));
-            DG.ReplaceDependees(name, new HashSet<string>());
-            ISet<string> cellSet = new HashSet<string>();
+            ISet<string> cellSet;
+            DG.ReplaceDependees(name, formula.GetVariables());
             try
             {
-                cellSet = new HashSet<string>(GetCellsToRecalculate(name));
+               cellSet= new HashSet<string>(GetCellsToRecalculate(name));
             }
             catch (CircularException)
             {
                 if (old_Value.GetType().Equals(typeof(double)))
                 {
-                    Cell c1 = (Cell)old_Value;
-                    cells[name] = c1;
+                   if(cells.ContainsKey(name))
+                    {
+                        cells[name].content = Convert.ToDouble(old_Value);
+                    }
                     DG.ReplaceDependees(name, s);
 
                 }
                 else if (old_Value.GetType().Equals(typeof(string)))
                 {
-                    Cell c1 = (Cell)old_Value;
-                    cells[name] = c1;
+                    if (cells.ContainsKey(name))
+                    {
+                        cells[name].content = Convert.ToString(old_Value);
+                    }
                     DG.ReplaceDependees(name, s);
                 }
                 else
                 {
-                    Cell c1 = (Cell)old_Value;
-                    cells[name] = c1;
+                    if (cells.ContainsKey(name))
+                    {
+                        cells[name].content = (Formula)(old_Value);
+                    }
                     DG.ReplaceDependees(name, s);
                 }
                 throw new CircularException();
@@ -236,10 +242,46 @@ namespace SS
             cells[name] = c;
             return cellSet;
         }
-
+        /// <summary>
+        /// Returns an enumeration, without duplicates, of the names of all cells whose
+        /// values depend directly on the value of the named cell. 
+        /// </summary>
+        /// 
+        /// <exception cref="ArgumentNullException"> 
+        ///   If the name is null, throw an ArgumentNullException.
+        /// </exception>
+        /// 
+        /// <exception cref="InvalidNameException"> 
+        ///   If the name is null or invalid, throw an InvalidNameException
+        /// </exception>
+        /// 
+        /// <param name="name"></param>
+        /// <returns>
+        ///   Returns an enumeration, without duplicates, of the names of all cells that contain
+        ///   formulas containing name.
+        /// 
+        ///   <para>For example, suppose that: </para>
+        ///   <list type="bullet">
+        ///      <item>A1 contains 3</item>
+        ///      <item>B1 contains the formula A1 * A1</item>
+        ///      <item>C1 contains the formula B1 + A1</item>
+        ///      <item>D1 contains the formula B1 - C1</item>
+        ///   </list>
+        /// 
+        ///   <para>The direct dependents of A1 are B1 and C1</para>
+        /// 
+        /// </returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(null, name))
+            {
+                throw new ArgumentException();
+            }
+            if (ReferenceEquals(null, name) || !variableCheck(name))
+            {
+                throw new InvalidNameException();
+            }
+            return DG.GetDependents(name);
         }
         private static bool variableCheck(string s)
         {
