@@ -8,7 +8,7 @@ namespace SpreadsheetTests
     {
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
+        [ExpectedException(typeof(InvalidNameException))]
         public void GetCellContentsException()
         {
             Spreadsheet sheet = new Spreadsheet();
@@ -21,7 +21,7 @@ namespace SpreadsheetTests
             Spreadsheet sheet = new Spreadsheet();
             sheet.SetCellContents("a7", 1);
             sheet.SetCellContents("ai7", 2);
-            Assert.AreEqual(sheet.GetCellContents("a7"), 1);
+            Assert.AreEqual(sheet.GetCellContents("a7"), 1.0);
         }
     }
 }

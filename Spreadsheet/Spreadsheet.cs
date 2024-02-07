@@ -14,7 +14,6 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SS
 {
-
     public class Spreadsheet : AbstractSpreadsheet
     {
         private class Cell
@@ -239,7 +238,7 @@ namespace SS
                 throw new CircularException();
             }
             Cell c = new Cell(name, formula);
-            cells[name] = c;
+            cells[name] = c; 
             return cellSet;
         }
         /// <summary>
