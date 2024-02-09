@@ -6,7 +6,23 @@ using SpreadsheetUtilities;
 
 namespace SS
 {
-   
+    /// <summary>
+    /// Author:    Yanxia Bu
+    /// Partner:    No
+    /// Date:     1/28/2024
+    /// Course:    CS 3500, University of Utah, School of Computing
+    /// Copyright: CS 3500 and Yanxia Bu - This work may not 
+    ///            be copied for use in Academic Coursework.
+    ///
+    /// I, Yanxia Bu, certify that I wrote this code from scratch and
+    /// did not copy it in part or whole from another source. All 
+    /// references used in the completion of the assignments are cited 
+    /// in my README file.
+    ///
+    /// This is the class for calculate the spreadsheet which this is interface is represents the state of a simple spreadsheet.  A 
+    ///     spreadsheet consists of an infinite number of named cells.
+    /// 
+    /// </summary>
     /// <summary>
     /// Thrown to indicate that a change to a cell will cause a circular dependency.
     /// </summary>
@@ -317,20 +333,25 @@ namespace SS
         }
 
 
-        /// <summary>
-        /// A helper for the GetCellsToRecalculate method.
-        /// 
-        ///   -- You should fully comment what is going on below using XML tags as appropriate --
-        /// </summary>
+   /// <summary>
+   /// This method is visit the relationship of the cell and we are traverse eah string in the linklist
+   /// </summary>
+   /// <param name="start"></param>
+   /// <param name="name"></param>
+   /// <param name="visited"></param>
+   /// <param name="changed"></param>
+   /// <exception cref="CircularException"></exception>
         private void Visit(String start, String name, ISet<String> visited, LinkedList<String> changed)
         {
             visited.Add(name);
+            // traverse the relationship
             foreach (String n in GetDirectDependents(name))
             {
                 if (n.Equals(start))
                 {
                     throw new CircularException();
                 }
+                // if not find the it relationship and keeping recursive 
                 else if (!visited.Contains(n))
                 {
                     Visit(start, n, visited, changed);

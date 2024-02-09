@@ -11,96 +11,33 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-/// <summary>
-/// Author:    Yanxia Bu
-/// Partner:    No
-/// Date:     1/28/2024
-/// Course:    CS 3500, University of Utah, School of Computing
-/// Copyright: CS 3500 and Yanxia Bu - This work may not 
-///            be copied for use in Academic Coursework.
-///
-/// I, Yanxia Bu, certify that I wrote this code from scratch and
-/// did not copy it in part or whole from another source.  All 
-/// references used in the completion of the assignments are cited 
-/// in my README file.
-///
-/// This is the class for calculate the spreadsheet which spreadsheet consists of an infinite number of named cells.
-/// we try to create the cell in difference type of different cell. 
-/// as many times as the related cells are modified. 
-///   Formula
-/// </summary>
+
 namespace SS
 {
     /// <summary>
-    /// <para>
-    ///     An AbstractSpreadsheet object represents the state of a simple spreadsheet.  A 
-    ///     spreadsheet consists of an infinite number of named cells.
-    /// </para>
-    /// <para>
-    ///     A string is a valid cell name if and only if:
-    /// </para>
-    /// <list type="number">
-    ///      <item> its first character is an underscore or a letter</item>
-    ///      <item> its remaining characters (if any) are underscores and/or letters and/or digits</item>
-    /// </list>   
-    /// <para>
-    ///     Note that this is the same as the definition of valid variable from the Formula class assignment.
-    /// </para>
-    /// 
-    /// <para>
-    ///     For example, "x", "_", "x2", "y_15", and "___" are all valid cell  names, but
-    ///     "25", "2x", and "&amp;" are not.  Cell names are case sensitive, so "x" and "X" are
-    ///     different cell names.
-    /// </para>
-    /// 
-    /// <para>
-    ///     A spreadsheet contains a cell corresponding to every possible cell name.  (This
-    ///     means that a spreadsheet contains an infinite number of cells.)  In addition to 
-    ///     a name, each cell has a contents and a value.  The distinction is important.
-    /// </para>
-    /// 
-    /// <para>
-    ///     The contents of a cell can be (1) a string, (2) a double, or (3) a Formula.  If the
-    ///     contents is an empty string, we say that the cell is empty.  (By analogy, the contents
-    ///     of a cell in Excel is what is displayed on the editing line when the cell is selected.)
-    /// </para>
-    /// 
-    /// <para>
-    ///     In a new spreadsheet, the contents of every cell is the empty string. Note: 
-    ///     this is by definition (it is IMPLIED, not stored).
-    /// </para>
-    /// 
-    /// <para>
-    ///     The value of a cell can be (1) a string, (2) a double, or (3) a FormulaError.  
-    ///     (By analogy, the value of an Excel cell is what is displayed in that cell's position
-    ///     in the grid.)
-    /// </para>
-    /// 
-    /// <list type="number">
-    ///   <item>If a cell's contents is a string, its value is that string.</item>
-    /// 
-    ///   <item>If a cell's contents is a double, its value is that double.</item>
-    /// 
-    ///   <item>
-    ///      If a cell's contents is a Formula, its value is either a double or a FormulaError,
-    ///      as reported by the Evaluate method of the Formula class.  The value of a Formula,
-    ///      of course, can depend on the values of variables.  The value of a variable is the 
-    ///      value of the spreadsheet cell it names (if that cell's value is a double) or 
-    ///      is undefined (otherwise).
-    ///   </item>
-    /// 
-    /// </list>
-    /// 
-    /// <para>
-    ///     Spreadsheets are never allowed to contain a combination of Formulas that establish
-    ///     a circular dependency.  A circular dependency exists when a cell depends on itself.
-    ///     For example, suppose that A1 contains B1*2, B1 contains C1*2, and C1 contains A1*2.
-    ///     A1 depends on B1, which depends on C1, which depends on A1.  That's a circular
-    ///     dependency.
-    /// </para>
+    /// Author:    Yanxia Bu
+    /// Partner:    No
+    /// Date:     1/28/2024
+    /// Course:    CS 3500, University of Utah, School of Computing
+    /// Copyright: CS 3500 and Yanxia Bu - This work may not 
+    ///            be copied for use in Academic Coursework.
+    ///
+    /// I, Yanxia Bu, certify that I wrote this code from scratch and
+    /// did not copy it in part or whole from another source.  All 
+    /// references used in the completion of the assignments are cited 
+    /// in my README file.
+    ///
+    /// This is the class for calculate the spreadsheet which spreadsheet consists of an infinite number of named cells.
+    /// we try to create the cell in difference type of different cell. 
+    /// as many times as the related cells are modified. 
+    ///   Formula
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
+        /// <summary>
+        ///   An AbstractSpreadsheet object represents the state of a simple spreadsheet.  A 
+        ///    spreadsheet consists of an infinite number of named cells.
+        /// </summary>
         private class Cell
         {
             private string name;
