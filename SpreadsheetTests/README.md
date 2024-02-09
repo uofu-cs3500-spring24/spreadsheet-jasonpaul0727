@@ -10,10 +10,10 @@ Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Aca
 ```
 
 # Comments to Evaluators:
-I create the test for testing difference type of formula and prevent the potential exception
+I create the test for testing the wrong format of circular exception and Invaidname Exception I also test for the get cell content for formula,string and double.
 
 # Consulted Peers:
 
-YiChong Chen;
+Morgan Dietz;
 PeiYi Hu;
-Shay Xia
+Shenghao Gao;
