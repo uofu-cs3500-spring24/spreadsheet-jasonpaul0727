@@ -114,7 +114,17 @@ namespace SpreadsheetTests
             sheet.SetCellContents("a1", 2.0);
             sheet.SetCellContents("a1", f2);
             sheet.SetCellContents("a2", f2);
-
+        }
+        [TestMethod()]
+        [ExpectedException(typeof(CircularException))]
+        public void traceCircular()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetCellContents("a1", new Formula("a2+a3"));
+            s.SetCellContents("a2", 1);
+            s.SetCellContents("a3", 2);
+            s.SetCellContents("a2", new Formula("a3-a1"));
+            Assert.AreEqual(1,s.GetCellContents("a2"));
         }
         /// <summary>
         /// Test exception of circular

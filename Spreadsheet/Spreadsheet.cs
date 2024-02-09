@@ -11,33 +11,135 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
+/// <summary>
+/// Author:    Yanxia Bu
+/// Partner:    No
+/// Date:     1/28/2024
+/// Course:    CS 3500, University of Utah, School of Computing
+/// Copyright: CS 3500 and Yanxia Bu - This work may not 
+///            be copied for use in Academic Coursework.
+///
+/// I, Yanxia Bu, certify that I wrote this code from scratch and
+/// did not copy it in part or whole from another source.  All 
+/// references used in the completion of the assignments are cited 
+/// in my README file.
+///
+/// This is the class for calculate the spreadsheet which spreadsheet consists of an infinite number of named cells.
+/// we try to create the cell in difference type of different cell. 
+/// as many times as the related cells are modified. 
+///   Formula
+/// </summary>
 namespace SS
 {
+    /// <summary>
+    /// <para>
+    ///     An AbstractSpreadsheet object represents the state of a simple spreadsheet.  A 
+    ///     spreadsheet consists of an infinite number of named cells.
+    /// </para>
+    /// <para>
+    ///     A string is a valid cell name if and only if:
+    /// </para>
+    /// <list type="number">
+    ///      <item> its first character is an underscore or a letter</item>
+    ///      <item> its remaining characters (if any) are underscores and/or letters and/or digits</item>
+    /// </list>   
+    /// <para>
+    ///     Note that this is the same as the definition of valid variable from the Formula class assignment.
+    /// </para>
+    /// 
+    /// <para>
+    ///     For example, "x", "_", "x2", "y_15", and "___" are all valid cell  names, but
+    ///     "25", "2x", and "&amp;" are not.  Cell names are case sensitive, so "x" and "X" are
+    ///     different cell names.
+    /// </para>
+    /// 
+    /// <para>
+    ///     A spreadsheet contains a cell corresponding to every possible cell name.  (This
+    ///     means that a spreadsheet contains an infinite number of cells.)  In addition to 
+    ///     a name, each cell has a contents and a value.  The distinction is important.
+    /// </para>
+    /// 
+    /// <para>
+    ///     The contents of a cell can be (1) a string, (2) a double, or (3) a Formula.  If the
+    ///     contents is an empty string, we say that the cell is empty.  (By analogy, the contents
+    ///     of a cell in Excel is what is displayed on the editing line when the cell is selected.)
+    /// </para>
+    /// 
+    /// <para>
+    ///     In a new spreadsheet, the contents of every cell is the empty string. Note: 
+    ///     this is by definition (it is IMPLIED, not stored).
+    /// </para>
+    /// 
+    /// <para>
+    ///     The value of a cell can be (1) a string, (2) a double, or (3) a FormulaError.  
+    ///     (By analogy, the value of an Excel cell is what is displayed in that cell's position
+    ///     in the grid.)
+    /// </para>
+    /// 
+    /// <list type="number">
+    ///   <item>If a cell's contents is a string, its value is that string.</item>
+    /// 
+    ///   <item>If a cell's contents is a double, its value is that double.</item>
+    /// 
+    ///   <item>
+    ///      If a cell's contents is a Formula, its value is either a double or a FormulaError,
+    ///      as reported by the Evaluate method of the Formula class.  The value of a Formula,
+    ///      of course, can depend on the values of variables.  The value of a variable is the 
+    ///      value of the spreadsheet cell it names (if that cell's value is a double) or 
+    ///      is undefined (otherwise).
+    ///   </item>
+    /// 
+    /// </list>
+    /// 
+    /// <para>
+    ///     Spreadsheets are never allowed to contain a combination of Formulas that establish
+    ///     a circular dependency.  A circular dependency exists when a cell depends on itself.
+    ///     For example, suppose that A1 contains B1*2, B1 contains C1*2, and C1 contains A1*2.
+    ///     A1 depends on B1, which depends on C1, which depends on A1.  That's a circular
+    ///     dependency.
+    /// </para>
+    /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
         private class Cell
         {
             private string name;
-            
+            /// <summary>
+            /// object content
+            /// </summary>
             public object content
             {
                 get;
                 set;
             }
             private object value;
+            /// <summary>
+            /// cell type with double
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="content"></param>
             public Cell(string name, double content)
             {
                 this.name = name;
                 this.content = content;
                 value = content;
             }
+            /// <summary>
+            /// cell type with fomula
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="content"></param>
             public Cell(string name , Formula content)
             {
                 this.name = name;
                 this.content = content;
                 value = content;
             }
+            /// <summary>
+            /// cell type with string
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="content"></param>
             public Cell(string name ,string content)
             {
                 this.name = name;
@@ -54,6 +156,7 @@ namespace SS
         /// </summary>
         public override object GetCellContents(string name)
         {
+            // check invalid type
             if (!variableCheck(name))
             {
                 throw new InvalidNameException();
@@ -71,6 +174,7 @@ namespace SS
         public override IEnumerable<string> GetNamesOfAllNonemptyCells()
         {
             HashSet<string> cellSet = new HashSet<string>();
+            // use for loop visit each cell
             foreach (string name in cells.Keys)
             {
                 if (cells.TryGetValue(name,out Cell? value) && value.content!="")
@@ -105,10 +209,12 @@ namespace SS
         /// </returns>
         public override ISet<string> SetCellContents(string name, double number)
         {
+            // check invaid format
             if (!variableCheck(name)||ReferenceEquals(null,name))
             {
                 throw new InvalidNameException();
             }
+            // check whether cell contain the name before and recalcuate the relationship 
             Cell c = new Cell(name, number);
             cells[name]= c;
             HashSet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
@@ -143,6 +249,7 @@ namespace SS
         /// </returns>
         public override ISet<string> SetCellContents(string name, string text)
         {
+            // check the invaid form of text and name 
             if (!variableCheck(name) || ReferenceEquals(null, name))
             {
                 throw new InvalidNameException();
@@ -151,9 +258,10 @@ namespace SS
                 throw new ArgumentException();
             }
             object n = GetCellContents(name);
+            // check whether cell contain the name before and recalcuate the relationship 
             DG.ReplaceDependees(name, new HashSet<string>());
             Cell c = new Cell(name, text);
-             cells[name]= c;
+            cells[name]= c;
             ISet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
             return cellSet;
         }
@@ -191,7 +299,7 @@ namespace SS
         /// </returns>
         public override ISet<string> SetCellContents(string name, Formula formula)
         {
-            
+             // check the variable of the formula
              if(ReferenceEquals(null, formula))
               {
                throw new ArgumentException();
@@ -200,14 +308,17 @@ namespace SS
             {
                 throw new InvalidNameException();
             }
+            // storing the old value and denpendent
             object old_Value = GetCellContents(name);
             HashSet<string> s = new HashSet<string>(DG.GetDependees(name));
             ISet<string> cellSet;
+            // replace the dependent
             DG.ReplaceDependees(name, formula.GetVariables());
             try
             {
                cellSet= new HashSet<string>(GetCellsToRecalculate(name));
             }
+            // if catch the exception look back type of the old value ad put back to the cell
             catch (CircularException)
             {
                 if (old_Value.GetType().Equals(typeof(double)))
@@ -237,6 +348,7 @@ namespace SS
                 }
                 throw new CircularException();
             }
+            // check the whether cell contain the value before 
             Cell c = new Cell(name, formula);
             cells[name] = c; 
             return cellSet;
@@ -272,16 +384,14 @@ namespace SS
         /// </returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
-            if (ReferenceEquals(null, name))
-            {
-                throw new ArgumentException();
-            }
-            if (ReferenceEquals(null, name) || !variableCheck(name))
-            {
-                throw new InvalidNameException();
-            }
+       
             return DG.GetDependents(name);
         }
+        /// <summary>
+        /// check it is valid of the type of variable
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns> valid format or not </returns>
         private static bool variableCheck(string s)
         {
                 if (Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$") == false)
