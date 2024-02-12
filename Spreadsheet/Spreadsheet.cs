@@ -66,7 +66,7 @@ namespace SS
             /// </summary>
             /// <param name="name"></param>
             /// <param name="content"></param>
-            public Cell(string name , Formula content)
+            public Cell(string name, Formula content)
             {
                 this.name = name;
                 this.content = content;
@@ -77,7 +77,7 @@ namespace SS
             /// </summary>
             /// <param name="name"></param>
             /// <param name="content"></param>
-            public Cell(string name ,string content)
+            public Cell(string name, string content)
             {
                 this.name = name;
                 this.content = content;
@@ -85,8 +85,8 @@ namespace SS
             }
         }
         // create the dict <string, Cell>
-        private Dictionary<string,Cell> cells = new Dictionary<string,Cell>();
-        DependencyGraph DG =new DependencyGraph();
+        private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
+        DependencyGraph DG = new DependencyGraph();
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.
@@ -114,7 +114,7 @@ namespace SS
             // use for loop visit each cell
             foreach (string name in cells.Keys)
             {
-                if (cells.TryGetValue(name,out Cell? value) && value.content!="")
+                if (cells.TryGetValue(name, out Cell? value) && value.content != "")
                 {
                     cellSet.Add(name);
                 }
@@ -147,17 +147,17 @@ namespace SS
         public override ISet<string> SetCellContents(string name, double number)
         {
             // check invaid format
-            if (!variableCheck(name)||ReferenceEquals(null,name))
+            if (!variableCheck(name) || ReferenceEquals(null, name))
             {
                 throw new InvalidNameException();
             }
             // check whether cell contain the name before and recalcuate the relationship 
             Cell c = new Cell(name, number);
-            cells[name]= c;
+            cells[name] = c;
             HashSet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
             DG.ReplaceDependees(name, new HashSet<string>());
             return cellSet;
-            
+
         }
         /// <summary>
         /// The contents of the named cell becomes the text.  
@@ -191,14 +191,15 @@ namespace SS
             {
                 throw new InvalidNameException();
             }
-            if(ReferenceEquals(null, text)){
+            if (ReferenceEquals(null, text))
+            {
                 throw new ArgumentException();
             }
             object n = GetCellContents(name);
             // check whether cell contain the name before and recalcuate the relationship 
             DG.ReplaceDependees(name, new HashSet<string>());
             Cell c = new Cell(name, text);
-            cells[name]= c;
+            cells[name] = c;
             ISet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
             return cellSet;
         }
@@ -236,12 +237,12 @@ namespace SS
         /// </returns>
         public override ISet<string> SetCellContents(string name, Formula formula)
         {
-             // check the variable of the formula
-             if(ReferenceEquals(null, formula))
-              {
-               throw new ArgumentException();
-             }
-            if (ReferenceEquals(null, name)||!variableCheck(name))
+            // check the variable of the formula
+            if (ReferenceEquals(null, formula))
+            {
+                throw new ArgumentException();
+            }
+            if (ReferenceEquals(null, name) || !variableCheck(name))
             {
                 throw new InvalidNameException();
             }
@@ -253,14 +254,14 @@ namespace SS
             DG.ReplaceDependees(name, formula.GetVariables());
             try
             {
-               cellSet= new HashSet<string>(GetCellsToRecalculate(name));
+                cellSet = new HashSet<string>(GetCellsToRecalculate(name));
             }
             // if catch the exception look back type of the old value ad put back to the cell
             catch (CircularException)
             {
                 if (old_Value.GetType().Equals(typeof(double)))
                 {
-                   if(cells.ContainsKey(name))
+                    if (cells.ContainsKey(name))
                     {
                         cells[name].content = Convert.ToDouble(old_Value);
                     }
@@ -287,7 +288,7 @@ namespace SS
             }
             // check the whether cell contain the value before 
             Cell c = new Cell(name, formula);
-            cells[name] = c; 
+            cells[name] = c;
             return cellSet;
         }
         /// <summary>
@@ -321,7 +322,7 @@ namespace SS
         /// </returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
-       
+
             return DG.GetDependents(name);
         }
         /// <summary>
@@ -331,13 +332,11 @@ namespace SS
         /// <returns> valid format or not </returns>
         private static bool variableCheck(string s)
         {
-                if (Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$") == false)
-                {
+            if (Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$") == false)
+            {
                 return false;
-                }
+            }
             return true;
- 
-
         }
     }
 }
