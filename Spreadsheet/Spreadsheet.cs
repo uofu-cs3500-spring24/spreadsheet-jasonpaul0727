@@ -1,7 +1,9 @@
 ﻿using SpreadsheetUtilities;
 using SS;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,8 +11,10 @@ using System.Reflection.Metadata;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Xml;
+
 
 namespace SS
 {
@@ -40,7 +44,9 @@ namespace SS
         /// </summary>
         private class Cell
         {
-            private string name;
+            public string name
+            { get; set; }
+
             /// <summary>
             /// object content
             /// </summary>
@@ -49,7 +55,7 @@ namespace SS
                 get;
                 set;
             }
-            private object value;
+            public object value;
             /// <summary>
             /// cell type with double
             /// </summary>
@@ -83,27 +89,99 @@ namespace SS
                 this.content = content;
                 value = content;
             }
+
         }
         // create the dict <string, Cell>
-        private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
-        DependencyGraph DG = new DependencyGraph();
+        private Dictionary<string, Cell> cells;
+        private DependencyGraph DG;
+        public override bool Changed { get; protected set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Spreadsheet() : this(s => true, s => s, "default")
+        {
+            cells = new Dictionary<string, Cell>();
+            DG = new DependencyGraph();
+            Changed = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isValid"></param>
+        /// <param name="normalize"></param>
+        /// <param name="version"></param>
+        public Spreadsheet(Func<string, bool> isValid, Func<string, string> normalize, string version) : base(isValid, normalize, version)
+        {
+            cells = new Dictionary<string, Cell>();
+            DG = new DependencyGraph();
+
+        }
+        public Spreadsheet(string filePath, Func<string, bool> isValid, Func<string, string> normalize, string version) : this(isValid, normalize, version)
+        {
+            string CellName = "";
+            cells = new Dictionary<string, Cell>();
+            DG = new DependencyGraph();
+            if (filePath == null || GetSavedVersion(filePath) != version) throw new SpreadsheetReadWriteException("Wrong Format of Spreadsheet");
+            try
+            {
+                using (XmlReader reader = XmlReader.Create(filePath))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            switch (reader.Name)
+                            {
+                                case "contents":
+                                    reader.Read();
+                                    string s = reader.ReadContentAsString();
+                                    s = s.Trim();
+                                    SetContentsOfCell(CellName, s);
+                                    break;
+                                case "name":
+                                    reader.Read();
+                                    CellName = reader.Value;
+                                    break;
+                                case "cell":
+                                    break;
+                                case "spreadsheet":
+                                    break;
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch
+            {
+                throw new SpreadsheetReadWriteException("wrong function format");
+            }
+
+            // read xml 
+            // read every cell from Cell Xml 
+            // validate name of every cell
+            // add every cell to Spreadsheet using setContentOf cell . 
+        }
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.
         /// </summary>
         public override object GetCellContents(string name)
         {
+
             // check invalid type
-            if (!variableCheck(name))
+            if (!variableCheck(Normalize(name)) || ReferenceEquals(null, Normalize(name)))
             {
                 throw new InvalidNameException();
             }
-            if (cells.ContainsKey(name))
+            if (cells.ContainsKey(Normalize(name)))
             {
-                return cells[name].content;
+                return cells[Normalize(name)].content;
             }
             return "";
         }
+
+
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.
@@ -144,7 +222,7 @@ namespace SS
         ///      set {A1, B1, C1} is returned.
         ///   </para>
         /// </returns>
-        public override ISet<string> SetCellContents(string name, double number)
+        protected override IList<string> SetCellContents(string name, double number)
         {
             // check invaid format
             if (!variableCheck(name) || ReferenceEquals(null, name))
@@ -154,7 +232,7 @@ namespace SS
             // check whether cell contain the name before and recalcuate the relationship 
             Cell c = new Cell(name, number);
             cells[name] = c;
-            HashSet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
+            List<string> cellSet = new List<string>(GetCellsToRecalculate(name));
             DG.ReplaceDependees(name, new HashSet<string>());
             return cellSet;
 
@@ -184,7 +262,7 @@ namespace SS
         ///     set {A1, B1, C1} is returned.
         ///   </para>
         /// </returns>
-        public override ISet<string> SetCellContents(string name, string text)
+        protected override IList<string> SetCellContents(string name, string text)
         {
             // check the invaid form of text and name 
             if (!variableCheck(name) || ReferenceEquals(null, name))
@@ -198,9 +276,10 @@ namespace SS
             object n = GetCellContents(name);
             // check whether cell contain the name before and recalcuate the relationship 
             DG.ReplaceDependees(name, new HashSet<string>());
+            DG.ReplaceDependents(name, new HashSet<string>());
             Cell c = new Cell(name, text);
             cells[name] = c;
-            ISet<string> cellSet = new HashSet<string>(GetCellsToRecalculate(name));
+            List<string> cellSet = new List<string>(GetCellsToRecalculate(name));
             return cellSet;
         }
         /// <summary>
@@ -235,13 +314,8 @@ namespace SS
         ///   </para>
         /// 
         /// </returns>
-        public override ISet<string> SetCellContents(string name, Formula formula)
+        protected override IList<string> SetCellContents(string name, Formula formula)
         {
-            // check the variable of the formula
-            if (ReferenceEquals(null, formula))
-            {
-                throw new ArgumentException();
-            }
             if (ReferenceEquals(null, name) || !variableCheck(name))
             {
                 throw new InvalidNameException();
@@ -249,12 +323,20 @@ namespace SS
             // storing the old value and denpendent
             object old_Value = GetCellContents(name);
             HashSet<string> s = new HashSet<string>(DG.GetDependees(name));
-            ISet<string> cellSet;
+            List<string> cellSet;
             // replace the dependent
             DG.ReplaceDependees(name, formula.GetVariables());
+            IEnumerable<string> Check = formula.GetVariables();
+            foreach (string str in Check)
+            {
+                if (!IsValid(str))
+                {
+                    throw new FormulaFormatException("wrong format" + str);
+                }
+            }
             try
             {
-                cellSet = new HashSet<string>(GetCellsToRecalculate(name));
+                cellSet = new List<string>(GetCellsToRecalculate(name));
             }
             // if catch the exception look back type of the old value ad put back to the cell
             catch (CircularException)
@@ -418,9 +500,9 @@ namespace SS
             {
                 cellsContents = new List<string>(SetCellContents(Normalize(name), result));
             }
-            else if (content !=""&&content[0] == '=')
+            else if (content != "" && content[0] == '=')
             {
-                
+
                 string formula = content.Substring(1, content.Length - 1);
                 Formula f = new Formula(Normalize(formula));
                 cellsContents = new List<string>(SetCellContents(Normalize(name), f));
@@ -471,7 +553,7 @@ namespace SS
                     {
                         if (reader.IsStartElement())
                         {
-                            if ( reader.Name =="spreadsheet")
+                            if (reader.Name == "spreadsheet")
                             {
                                 return reader["version"];
                             }
@@ -533,6 +615,7 @@ namespace SS
                             case Formula:
                                 writer.WriteElementString("contents", "=" + ((Formula)c.content).ToString());
                                 break;
+
                         }
                         writer.WriteEndElement();
                     }
@@ -634,6 +717,5 @@ namespace SS
             }
             throw new ArgumentException("Formula Error");
         }
-
     }
 }
