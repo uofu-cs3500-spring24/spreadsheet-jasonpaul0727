@@ -234,7 +234,7 @@ namespace SpreadsheetUtilities
             foreach (string i in token)
             {
                 // I use tryparse to identify it is integer or not
-                if ((int.TryParse(i, out int number)) == true)
+                if ((double.TryParse(i, out double number)) == true)
                 {
                     // if it is integer I will identify it has multiply or divide symbol in operate stack if has I will calculate 
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
@@ -334,7 +334,8 @@ namespace SpreadsheetUtilities
             {
                 return new FormulaError("wrong format");
             }
-            return addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
+            double res = addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
+            return res;
         }
         /// <summary>
         /// This is helper method for checking wheather it is / or * sign
@@ -434,11 +435,14 @@ namespace SpreadsheetUtilities
         /// <double></returns>
         public static double addOrminus(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
+            double res = 0;
             if (operator_Stack.Pop() == "+")
             {
-                return first_Value + second_Value;
+                res = second_Value + first_Value;
+                return res;
             }
-            return second_Value - first_Value;
+            res = second_Value - first_Value;
+            return res;
         }
 
         /// <summary>

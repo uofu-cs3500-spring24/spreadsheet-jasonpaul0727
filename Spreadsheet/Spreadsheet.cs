@@ -321,6 +321,14 @@ namespace SS
             List<string> cellSet;
             // replace the dependent
             DG.ReplaceDependees(name, formula.GetVariables());
+            IEnumerable<string>Check = formula.GetVariables();
+            foreach(string str in Check)
+            {
+                if (!IsValid(str))
+                {
+                    throw new FormulaFormatException("wrong format"+ str);
+                }
+            }
             try
             {
                 cellSet = new List<string>(GetCellsToRecalculate(name));
@@ -491,10 +499,6 @@ namespace SS
             {
                 
                 string formula = content.Substring(1, content.Length - 1);
-                if (!IsValid(content))
-                {
-                    throw new FormulaFormatException("wrong content");
-                }
                 Formula f = new Formula(Normalize(formula));
                 cellsContents = new List<string>(SetCellContents(Normalize(name), f));
             }
@@ -706,12 +710,8 @@ namespace SS
                 {
                     return (double)cell.value;
                 }
-                else
-                {
-                    throw new ArgumentException("Formula Error");
-                }
             }
-            throw new ArgumentException();
+            throw new ArgumentException("Formula Error");
         }
     }
 }
