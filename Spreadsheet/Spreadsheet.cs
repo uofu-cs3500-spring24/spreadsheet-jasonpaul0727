@@ -260,10 +260,6 @@ namespace SS
         /// </returns>
         protected override IList<string> SetCellContents(string name, string text)
         {
-            if (ReferenceEquals(null, text))
-            {
-                throw new ArgumentNullException();
-            }
             object n = GetCellContents(name);
             // check whether cell contain the name before and recalcuate the relationship 
             DG.ReplaceDependees(name, new HashSet<string>());
