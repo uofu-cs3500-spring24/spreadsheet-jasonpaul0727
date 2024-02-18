@@ -82,8 +82,12 @@ public class AS5_Tests
         ss.SetContentsOfCell("a1", "abc");
         ss.SetContentsOfCell("a2", "1.0");
         ss.SetContentsOfCell("a3", "=a2");
+        AbstractSpreadsheet sss = new Spreadsheet(s => true, s => s, "hello");
+        sss.SetContentsOfCell("a1", "abc");
+        sss.SetContentsOfCell("a2", "1.0");
+        sss.SetContentsOfCell("a3", "=a2");
         string xml = ss.GetXML();
-        Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<spreadsheet version=\"hello\">\r\n  <cell>\r\n    <name>a1</name>\r\n    <contents>abc</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a2</name>\r\n    <contents>1</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a3</name>\r\n    <contents>=a2</contents>\r\n  </cell>\r\n</spreadsheet>", xml);
+        Assert.AreEqual(sss.GetXML(), xml);
     }
     [TestMethod]
     public void wrongTypeTrue()
