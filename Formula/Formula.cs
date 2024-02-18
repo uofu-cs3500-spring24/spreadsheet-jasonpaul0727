@@ -234,7 +234,7 @@ namespace SpreadsheetUtilities
             foreach (string i in token)
             {
                 // I use tryparse to identify it is integer or not
-                if ((int.TryParse(i, out int number)) == true)
+                if ((double.TryParse(i, out double number)) == true)
                 {
                     // if it is integer I will identify it has multiply or divide symbol in operate stack if has I will calculate 
                     if (checkMultiOrDivideOperator(value_Stack, operator_Stack))
