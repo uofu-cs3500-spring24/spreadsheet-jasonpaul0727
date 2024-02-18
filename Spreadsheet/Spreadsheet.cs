@@ -122,8 +122,7 @@ namespace SS
             cells = new Dictionary<string, Cell>();
             DG = new DependencyGraph();
             if (filePath == null || GetSavedVersion(filePath) != version) throw new SpreadsheetReadWriteException("Wrong Format of Spreadsheet");
-            try
-            {
+            
                 using (XmlReader reader = XmlReader.Create(filePath))
                 {
                     while (reader.Read())
@@ -152,16 +151,11 @@ namespace SS
                     }
                 }
             }
-            catch
-            {
-                throw new SpreadsheetReadWriteException("wrong function format");
-            }
 
             // read xml 
             // read every cell from Cell Xml 
             // validate name of every cell
             // add every cell to Spreadsheet using setContentOf cell . 
-        }
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.

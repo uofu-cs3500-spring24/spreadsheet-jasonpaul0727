@@ -36,7 +36,57 @@ public class AS5_Tests
         Assert.AreEqual(6.0, s.GetCellValue("F1"));
         Assert.AreEqual(12.0, s.GetCellValue("E1"));
     }
-
+    [TestMethod]
+    [ExpectedException(typeof(CircularException))]
+    public void TesttheCircular()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        Formula f0 = new Formula("778");
+        Formula f1 = new Formula("a1+a2");
+        Formula f2 = new Formula("a2+a1");
+        sheet.SetContentsOfCell("a1", "778");
+        sheet.SetContentsOfCell("a2", "hello");
+        sheet.SetContentsOfCell("a3", "=a2");
+        sheet.SetContentsOfCell("a1", "=a1+a2");
+        sheet.SetContentsOfCell("a2", "=a2+a1");
+        sheet.SetContentsOfCell("a3", "=a3+a1");
+    }
+    [TestMethod]
+    [ExpectedException(typeof(CircularException))]
+    public void TesttheCircularString()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        sheet.SetContentsOfCell("a1", "Thanks");
+        sheet.SetContentsOfCell("a2", "hello");
+        sheet.SetContentsOfCell("a3", "=a2");
+        sheet.SetContentsOfCell("a1", "=a1+a2");
+        sheet.SetContentsOfCell("a2", "=a2+a1");
+        sheet.SetContentsOfCell("a3", "=a3+a1");
+    }
+    [TestMethod]
+    [ExpectedException(typeof(CircularException))]
+    public void TesttheCircularFormula()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        sheet.SetContentsOfCell("a5", "=15");
+        sheet.SetContentsOfCell("a1", "=a5");
+        sheet.SetContentsOfCell("a2", "=a5-1 ");
+        sheet.SetContentsOfCell("a3", "=a2");
+        sheet.SetContentsOfCell("a1", "=a1+a2");
+        sheet.SetContentsOfCell("a2", "=a2+a1");
+        sheet.SetContentsOfCell("a3", "=a3+a1");
+    }
+    [TestMethod]
+    [ExpectedException(typeof(InvalidNameException))]
+    public void TesttheCircularFormulaInvalid()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        sheet.SetContentsOfCell("/;5", "=15");
+    }
     [TestMethod]
     public void testTheSpreadSheetConstructor2()
     {
@@ -126,4 +176,6 @@ public class AS5_Tests
         s.SetContentsOfCell("B1", "= A1 + 5.2");
         Assert.AreEqual(9.3, s.GetCellValue("B1"));
     }
+    // test set content of Data
+
 }
