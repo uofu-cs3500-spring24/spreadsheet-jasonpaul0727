@@ -2,6 +2,7 @@ using Microsoft.VisualBasic;
 using NuGet.Frameworks;
 using SpreadsheetUtilities;
 using SS;
+using System.Runtime.Intrinsics.X86;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -241,5 +242,33 @@ public class AS5_Tests
         HashSet<string> strings = new HashSet<string>();
         strings.Add("a//7");
         Assert.AreEqual(sheet.GetCellValue(strings.First()), "");
+    }
+    /// <summary>
+    /// Test  empty  string
+    /// </summary>
+    [TestMethod]
+    public void GetCellValue2()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        HashSet<string> strings = new HashSet<string>();
+        strings.Add("a7");
+        Assert.AreEqual(sheet.GetCellValue(strings.First()), "");
+    }
+    /// <summary>
+    /// Test exception of circular
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(CircularException))]
+    public void CircularComplex()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        Formula f0 = new Formula("a3+a2");
+        Formula f1 = new Formula("a1+a2");
+        Formula f2 = new Formula("a2+a1");
+        sheet.SetContentsOfCell("a1", "4");
+        sheet.SetContentsOfCell("a2", "5");
+        sheet.SetContentsOfCell("a2", "=a3+a2");
+
     }
 }
