@@ -680,7 +680,7 @@ namespace SS
         /// </returns>
         public override object GetCellValue(string name)
         {
-            if (IsValid(name) == false)
+            if (!variableCheck(name))
             {
                 throw new InvalidNameException();
             }

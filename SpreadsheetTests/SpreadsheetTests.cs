@@ -230,4 +230,16 @@ public class AS5_Tests
         strings.Add("a//7");
         Assert.AreEqual(sheet.GetCellContents(strings.First()), "");
     }
+    /// <summary>
+    /// Test exception of empty and InvalidName
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(InvalidNameException))]
+    public void GetCellValueException2()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        HashSet<string> strings = new HashSet<string>();
+        strings.Add("a//7");
+        Assert.AreEqual(sheet.GetCellValue(strings.First()), "");
+    }
 }
