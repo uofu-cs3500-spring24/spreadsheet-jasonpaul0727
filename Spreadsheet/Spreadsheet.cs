@@ -11,6 +11,7 @@ using System.Reflection.Metadata;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -99,6 +100,9 @@ namespace SS
         /// </summary>
         public Spreadsheet() : this(s => true, s => s, "default")
         {
+           cells = new Dictionary<string, Cell>();
+           DG = new DependencyGraph();
+            Changed = false;
         }
         /// <summary>
         /// 
@@ -117,7 +121,7 @@ namespace SS
             string CellName = "";
             cells = new Dictionary<string, Cell>();
             DG = new DependencyGraph();
-            if (filePath == null || GetSavedVersion(filePath) != version) throw new SpreadsheetReadWriteException("xxx");
+            if (filePath == null || GetSavedVersion(filePath) != version) throw new SpreadsheetReadWriteException("Wrong Format of Spreadsheet");
             try
             {
                 using (XmlReader reader = XmlReader.Create(filePath))
@@ -272,6 +276,7 @@ namespace SS
             object n = GetCellContents(name);
             // check whether cell contain the name before and recalcuate the relationship 
             DG.ReplaceDependees(name, new HashSet<string>());
+            DG.ReplaceDependents(name, new HashSet<string>());
             Cell c = new Cell(name, text);
             cells[name] = c;
             List<string> cellSet = new List<string>(GetCellsToRecalculate(name));
@@ -495,7 +500,7 @@ namespace SS
             {
                 cellsContents = new List<string>(SetCellContents(Normalize(name), result));
             }
-            else if (content[0] == '=')
+            else if (content !=""&&content[0] == '=')
             {
                 
                 string formula = content.Substring(1, content.Length - 1);
@@ -624,7 +629,6 @@ namespace SS
             {
                 throw new SpreadsheetReadWriteException(e.Message);
             }
-
         }
         /// <summary>
         ///   Return an XML representation of the spreadsheet's contents
