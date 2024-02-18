@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DependencyGraph\DependencyGraph.csproj" />
+    <ProjectReference Include="..\Formula\Formula.csproj" />
     <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj" />
   </ItemGroup>
 

@@ -1,282 +1,107 @@
 using SpreadsheetUtilities;
 using SS;
-using System;
-using System.Security.Cryptography;
+using System.Xml;
+using System.Xml.Linq;
 
-namespace SpreadsheetTests
+[TestClass()]
+public class AS5_Tests
 {
-    /// <summary>
-    /// Author:    Yanxia Bu
-    /// Partner:    No
-    /// Date:     1/29/2024
-    /// Course:    CS 3500, University of Utah, School of Computing
-    /// Copyright: CS 3500 and Yanxia Bu - This work may not 
-    ///            be copied for use in Academic Coursework.
-    ///
-    /// I, Yanxia Bu, certify that I wrote this code from scratch and
-    /// did not copy it in part or whole from another source.  All 
-    /// references used in the completion of the assignments are cited 
-    /// in my README file.
-    /// 
-    /// This is the tester of the formula  I test every method include the tru case and bad case 
-    ///
-    ///   Formula
-    /// </summary>
-    [TestClass]
-    public class SpreadsheetTest
+    // Tests IsValid
+    [TestMethod]
+    public void I1()
     {
-        /// <summary>
-        /// Test exception of wrong format of sting
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(InvalidNameException))]
-        public void GetCellContentsException()
-        {
-            Spreadsheet sheet = new Spreadsheet();
+        AbstractSpreadsheet s = new Spreadsheet();
+        s.SetContentsOfCell("A1", "x");
+    }
+    [TestMethod, Timeout(2000)]
+    public void N1()
+    {
+        AbstractSpreadsheet s = new Spreadsheet();
+        s.SetContentsOfCell("B1", "hello");
+        Assert.AreEqual("", s.GetCellContents("b1"));
+    }
 
-            sheet.GetCellContents("1");
-        }
-        /// <summary>
-        /// Test exception of wrong format of sting
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(InvalidNameException))]
-        public void GetCellContentsException2()
-        {
-            Spreadsheet sheet = new Spreadsheet();
+    [TestMethod]
+    public void N2()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s.ToUpper(), "");
+        ss.SetContentsOfCell("B1", "hello");
+        Assert.AreEqual("hello", ss.GetCellContents("b1"));
+    }
 
-            sheet.GetCellContents("a155-");
-        }
-        /// <summary>
-        /// Test exception of wrong format of formula
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(InvalidNameException))]
-        public void SetCellContentsExceptionFormula()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            Formula f0 = new Formula("778");
-            sheet.SetCellContents("781  923", f0);
-        }
-        /// <summary>
-        /// Test exception of wrong format of formula
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void SetCellContentsExceptionFormulaWrongContent()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            Formula f0 = null;
-            sheet.SetCellContents("a8", f0);
-        }
-        /// <summary>
-        /// Test exception of wrong format of sting
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetCellContentsException3()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            string s = null;
-            sheet.SetCellContents("a7", s);
-        }
-        /// <summary>
-        /// Test exception of wrong format of sting
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(InvalidNameException))]
-        public void GetCellContentsException4()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("/2d", "ss");
-        }
-        /// <summary>
-        /// Test exception of wrong format of sting
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(InvalidNameException))]
-        public void GetCellContentsExceptiondouble()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("/2d", 5.0);
-        }
-        /// <summary>
-        /// Test exception of circular
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CircularException))]
-        public void Circularsimple()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            DependencyGraph D = new DependencyGraph();
-            Formula f1 = new Formula("a1+a2");
-            Formula f2 = new Formula("a2+a1");
-            sheet.SetCellContents("a1", 2.0);
-            sheet.SetCellContents("a1", f2);
-            sheet.SetCellContents("a2", f2);
-        }
-        [TestMethod()]
-        [ExpectedException(typeof(CircularException))]
-        public void traceCircular()
-        {
-            Spreadsheet s = new Spreadsheet();
-            s.SetCellContents("a1", new Formula("a2+a3"));
-            s.SetCellContents("a2", 1);
-            s.SetCellContents("a3", 2);
-            s.SetCellContents("a2", new Formula("a3-a1"));
-            Assert.AreEqual(1,s.GetCellContents("a2"));
-        }
-        /// <summary>
-        /// Test exception of circular
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CircularException))]
-        public void CircularsimpleString()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            DependencyGraph D = new DependencyGraph();
-            Formula f1 = new Formula("a1+a2");
-            Formula f2 = new Formula("a2+a1");
-            sheet.SetCellContents("a1", "2.0");
-            sheet.SetCellContents("a1", f2);
-            sheet.SetCellContents("a2", f2);
+    [TestMethod]
+    public void Nt3()
+    {
+        AbstractSpreadsheet s = new Spreadsheet();
+        s.SetContentsOfCell("a1", "5");
+        s.SetContentsOfCell("A1", "6");
+        s.SetContentsOfCell("B1", "= a1");
+        Assert.AreEqual(5.0, (double)s.GetCellValue("B1"), 1e-9);
+    }
 
-        }
-        /// <summary>
-        /// Test exception of circular
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CircularException))]
-        public void CircularsimpleFormula()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            DependencyGraph D = new DependencyGraph();
-            Formula f0 = new Formula("778");
-            Formula f1 = new Formula("a1+a2");
-            Formula f2 = new Formula("a2+a1");
-            sheet.SetCellContents("a1", f0);
-            sheet.SetCellContents("a1", f2);
-            sheet.SetCellContents("a2", f2);
-        }
+    [TestMethod]
+    public void N4()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s.ToUpper(), "");
+        ss.SetContentsOfCell("a1", "5");
+        ss.SetContentsOfCell("A1", "6");
+        ss.SetContentsOfCell("B1", "= a1");
+        Assert.AreEqual(6.0, (double)ss.GetCellValue("B1"), 1e-9);
+    }
+    [TestMethod]
+    [ExpectedException(typeof(SpreadsheetReadWriteException))]
+    public void Read1()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet();
+        ss.Save("save3.txt");
+        ss = new Spreadsheet("save3.txt", s => true, s => s, "version");
+    }
+    [TestMethod]
+    public void VersionTest()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
+        ss.Save("save.txt");
+        Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save.txt"));
+    }
+    [TestMethod]
+    public void SaveAndRead()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
+        ss.SetContentsOfCell("a1","abc");
+        ss.SetContentsOfCell("a2", "1.0");
+        ss.SetContentsOfCell("a3", "=a2");
+        ss.Save("saveRead.txt");
+        Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save.txt"));
+        AbstractSpreadsheet sss = new Spreadsheet("saveRead.txt",s => true, s => s, "hello");
+        Assert.AreEqual("abc", sss.GetCellContents("a1"));
+    }
+    [TestMethod]
+    public void GetXML()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
+        ss.SetContentsOfCell("a1", "abc");
+        ss.SetContentsOfCell("a2", "1.0");
+        ss.SetContentsOfCell("a3", "=a2");
+        Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<spreadsheet version=\"hello\">\r\n  <cell>\r\n    <name>a1</name>\r\n    <contents>abc</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a2</name>\r\n    <contents>1</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a3</name>\r\n    <contents>=a2</contents>\r\n  </cell>\r\n</spreadsheet>", ss.GetXML());
+    }
+    [TestMethod]
+    public void wrongTypeTrue()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet();
+        ss.SetContentsOfCell("A1", "2.1");
+        ss.SetContentsOfCell("A2", "2.1");
+        ss.SetContentsOfCell("A3", "=A1+B1");
+        ss.SetContentsOfCell("B1", "=A1");
+        Assert.AreNotEqual(ss.GetCellValue("B1"), new FormulaError(""));
+    }
 
-        /// <summary>
-        /// Test exception of circular
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CircularException))]
-        public void CircularComplex()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            DependencyGraph D = new DependencyGraph();
-            Formula f0 = new Formula("a3+a2");
-            Formula f1 = new Formula("a1+a2");
-            Formula f2 = new Formula("a2+a1");
-            sheet.SetCellContents("a1", 4);
-            sheet.SetCellContents("a2", 5);
-            sheet.SetCellContents("a1", f0);
-            sheet.SetCellContents("a1", f1);
-            sheet.SetCellContents("a1", f2);
-            sheet.SetCellContents("a2", f0);
 
-        }
-        /// <summary>
-        /// Get cell content of the 
-        /// </summary>
-        [TestMethod]
-        public void GetEveryValueFromKey()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("a7", 1);
-            sheet.SetCellContents("ai7", 2);
-            HashSet<string> strings = new HashSet<string>();
-            strings.Add("a7");
-            strings.Add("ai7");
-            Assert.AreEqual(sheet.GetNamesOfAllNonemptyCells().First(), strings.First());
-        }
-        /// <summary>
-        /// Get cell content of the  double
-        /// </summary>
-        [TestMethod]
-        public void GetCellContents()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("a7", 1);
-            sheet.SetCellContents("ai7", 2);
-            sheet.SetCellContents("ai7", 1);
-            Assert.AreEqual(sheet.GetCellContents("a7"), 1.0);
-            Assert.AreEqual(sheet.GetCellContents("ai7"), 1.0);
-        }
-        /// <summary>
-        /// Get cell content of the string
-        /// </summary>
-        [TestMethod]
-        public void GetCellContents2()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("a7", "1");
-            sheet.SetCellContents("ai7", "2");
-            Assert.AreEqual(sheet.GetCellContents("a7"), "1");
-            Assert.AreNotEqual(sheet.GetCellContents("a7"), "2");
-        }
-        /// <summary>
-        /// Get cell content of the formula
-        /// </summary>
-        [TestMethod]
-        public void GetCellContentscomplexFormula()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("a1", new Formula("1+1"));
-            sheet.SetCellContents("a2", new Formula("a1+1"));
-            sheet.SetCellContents("a3", new Formula("a2+a1"));
-            Formula f = (Formula)sheet.GetCellContents("a1");
-            Formula f2 = (Formula)sheet.GetCellContents("a2");
-            Formula f3 = (Formula)sheet.GetCellContents("a3");
-            Assert.AreEqual(new Formula("1+1"), f);
-            Assert.AreEqual(new Formula("a1+1"), f2);
-            Assert.AreNotEqual(new Formula("2"), f);
-        }
-        /// <summary>
-        /// Get cell content of the formula StreesTest
-        /// </summary>
-        [TestMethod]
-        public void StressTest()
-        {
-            Spreadsheet sheet = new Spreadsheet();
-            sheet.SetCellContents("a1", new Formula("a2+a3"));
-            sheet.SetCellContents("a1", new Formula("a3+a4"));
-            sheet.SetCellContents("a1", new Formula("a5+a6"));
-            sheet.SetCellContents("a1", new Formula("a6+a7"));
-            sheet.SetCellContents("a1", new Formula("a8+a9"));
-            sheet.SetCellContents("a1", new Formula("a9+b1"));
-            sheet.SetCellContents("a1", new Formula("b1+b2"));
-            sheet.SetCellContents("a1", new Formula("b3+b4"));
-            sheet.SetCellContents("a1", new Formula("b4+b5"));
-            sheet.SetCellContents("a1", new Formula("1"));
-            Assert.AreNotEqual(sheet.GetCellContents("a7"), "1");
-        }
-        /// <summary>
-        /// Get cell content of the formula StreesTest
-        /// </summary>
-        [TestMethod]
-        public void StressTest1()
-        {
-            StressTest();
-        }
-        /// <summary>
-        /// Get cell content of the formula StreesTest
-        /// </summary>
-        [TestMethod]
-        public void StressTest2()
-        {
-            StressTest1();
-        }
-        /// <summary>
-        /// Get cell content of the formula StreesTest
-        /// </summary>
-        [TestMethod]
-        public void StressTest3()
-        {
-            StressTest2();
-        }
+    [TestMethod]
+    public void equalFormula1()
+    {
+        AbstractSpreadsheet ss = new Spreadsheet();
+        ss.SetContentsOfCell("A1", "4.1");
+        ss.SetContentsOfCell("B1", "= A1 + 5.2");
+        Assert.AreEqual(9.3, ss.GetCellValue("B1"));
     }
 }
