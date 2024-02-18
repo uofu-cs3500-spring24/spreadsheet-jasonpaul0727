@@ -545,6 +545,7 @@ namespace SS
         /// <returns>Returns the version information of the spreadsheet saved in the named file.</returns>
         public override string GetSavedVersion(string filename)
         {
+            string result="";
             try
             {
                 using (XmlReader reader = XmlReader.Create(filename))
@@ -555,11 +556,11 @@ namespace SS
                         {
                             if (reader.Name == "spreadsheet")
                             {
-                                return reader["version"];
+                                 result = reader["version"];
                             }
                         }
                     }
-                    throw new SpreadsheetReadWriteException("version error");
+                    return result;
                 }
             }
             catch
