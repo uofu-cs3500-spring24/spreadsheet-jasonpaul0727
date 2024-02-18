@@ -368,15 +368,15 @@ namespace SS
         ///     This method will produce one of those enumerations.
         ///   </para>
         /// </returns>
-        protected IEnumerable<String> GetCellsToRecalculate( ISet<String> names )
+        protected IEnumerable<String> GetCellsToRecalculate(ISet<String> names)
         {
             LinkedList<String> changed = new LinkedList<String>();
-            HashSet<String>    visited = new HashSet<String>();
-            foreach ( String name in names )
+            HashSet<String> visited = new HashSet<String>();
+            foreach (String name in names)
             {
-                if ( !visited.Contains( name ) )
+                if (!visited.Contains(name))
                 {
-                    Visit( name, name, visited, changed );
+                    Visit(name, name, visited, changed);
                 }
             }
             return changed;
@@ -584,7 +584,7 @@ namespace SS
         ///   Return an XML representation of the spreadsheet's contents
         /// </summary>
         /// <returns> contents in XML form </returns>
-        public abstract string GetXML( );
+        public abstract string GetXML();
 
         /// <summary>
         /// If name is invalid, throws an InvalidNameException.

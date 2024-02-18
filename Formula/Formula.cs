@@ -334,8 +334,7 @@ namespace SpreadsheetUtilities
             {
                 return new FormulaError("wrong format");
             }
-            double res = addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
-            return res;
+            return addOrminus(value_Stack.Pop(), value_Stack.Pop(), value_Stack, operator_Stack);
         }
         /// <summary>
         /// This is helper method for checking wheather it is / or * sign
@@ -435,14 +434,11 @@ namespace SpreadsheetUtilities
         /// <double></returns>
         public static double addOrminus(double first_Value, double second_Value, Stack<double> value_Stack, Stack<string> operator_Stack)
         {
-            double res = 0;
             if (operator_Stack.Pop() == "+")
             {
-                res = second_Value + first_Value;
-                return res;
+                return first_Value + second_Value;
             }
-            res = second_Value - first_Value;
-            return res;
+            return second_Value - first_Value;
         }
 
         /// <summary>

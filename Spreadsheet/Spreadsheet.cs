@@ -1,4 +1,4 @@
-﻿using SpreadsheetUtilities;
+using SpreadsheetUtilities;
 using SS;
 using System;
 using System.Collections;
@@ -89,7 +89,7 @@ namespace SS
                 this.content = content;
                 value = content;
             }
-            
+
         }
         // create the dict <string, Cell>
         private Dictionary<string, Cell> cells;
@@ -100,8 +100,8 @@ namespace SS
         /// </summary>
         public Spreadsheet() : this(s => true, s => s, "default")
         {
-           cells = new Dictionary<string, Cell>();
-           DG = new DependencyGraph();
+            cells = new Dictionary<string, Cell>();
+            DG = new DependencyGraph();
             Changed = false;
         }
         /// <summary>
@@ -168,7 +168,7 @@ namespace SS
         /// </summary>
         public override object GetCellContents(string name)
         {
-   
+
             // check invalid type
             if (!variableCheck(Normalize(name)) || ReferenceEquals(null, Normalize(name)))
             {
@@ -326,12 +326,12 @@ namespace SS
             List<string> cellSet;
             // replace the dependent
             DG.ReplaceDependees(name, formula.GetVariables());
-            IEnumerable<string>Check = formula.GetVariables();
-            foreach(string str in Check)
+            IEnumerable<string> Check = formula.GetVariables();
+            foreach (string str in Check)
             {
                 if (!IsValid(str))
                 {
-                    throw new FormulaFormatException("wrong format"+ str);
+                    throw new FormulaFormatException("wrong format" + str);
                 }
             }
             try
@@ -500,9 +500,9 @@ namespace SS
             {
                 cellsContents = new List<string>(SetCellContents(Normalize(name), result));
             }
-            else if (content !=""&&content[0] == '=')
+            else if (content != "" && content[0] == '=')
             {
-                
+
                 string formula = content.Substring(1, content.Length - 1);
                 Formula f = new Formula(Normalize(formula));
                 cellsContents = new List<string>(SetCellContents(Normalize(name), f));
@@ -553,7 +553,7 @@ namespace SS
                     {
                         if (reader.IsStartElement())
                         {
-                            if ( reader.Name =="spreadsheet")
+                            if (reader.Name == "spreadsheet")
                             {
                                 return reader["version"];
                             }
