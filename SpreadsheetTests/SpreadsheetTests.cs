@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using NuGet.Frameworks;
 using SpreadsheetUtilities;
 using SS;
@@ -202,5 +203,31 @@ public class AS5_Tests
     {
         Spreadsheet sheet = new Spreadsheet();
         sheet.SetContentsOfCell("/2d", "5.8");
+    }
+    /// <summary>
+    /// Get cell content of the 
+    /// </summary>
+    [TestMethod]
+    public void GetEveryValueFromKey()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        sheet.SetContentsOfCell("a7", "1");
+        sheet.SetContentsOfCell("ai7", "2");
+        HashSet<string> strings = new HashSet<string>();
+        strings.Add("a7");
+        strings.Add("ai7");
+        Assert.AreEqual(sheet.GetNamesOfAllNonemptyCells().First(), strings.First());
+    }
+    /// <summary>
+    /// Test exception of circular
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(InvalidNameException))]
+    public void GetCellValueException()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        HashSet<string> strings = new HashSet<string>();
+        strings.Add("a//7");
+        Assert.AreEqual(sheet.GetCellContents(strings.First()), "");
     }
 }

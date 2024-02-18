@@ -162,7 +162,6 @@ namespace SS
         /// </summary>
         public override object GetCellContents(string name)
         {
-
             // check invalid type
             if (!variableCheck(Normalize(name)) || ReferenceEquals(null, Normalize(name)))
             {
@@ -230,32 +229,40 @@ namespace SS
         /// The contents of the named cell becomes the text.  
         /// </summary>
         /// 
-        /// <exception cref="ArgumentNullException"> 
-        ///   If text is null, throw an ArgumentNullException.
-        /// </exception>
+        /// <requires> 
+        ///   The name parameter must be valid/non-empty ""
+        /// </requires>
         /// 
         /// <exception cref="InvalidNameException"> 
-        ///   If the name is null or invalid, throw an InvalidNameException
-        /// </exception>
+        ///   If the name is invalid, throw an InvalidNameException
+        /// </exception>       
         /// 
         /// <param name="name"> The name of the cell </param>
         /// <param name="text"> The new content/value of the cell</param>
         /// 
         /// <returns>
-        ///   The method returns a set consisting of name plus the names of all 
-        ///   other cells whose value depends, directly or indirectly, on the 
-        ///   named cell.
-        /// 
+        ///   <para>
+        ///       This method returns a LIST consisting of the passed in name followed by the names of all 
+        ///       other cells whose value depends, directly or indirectly, on the named cell.
+        ///   </para>
+        ///
+        ///   <para>
+        ///       The order must correspond to a valid dependency ordering for recomputing
+        ///       all of the cells, i.e., if you re-evaluate each cell in the order of the list,
+        ///       the overall spreadsheet will be consistently updated.
+        ///   </para>
+        ///
         ///   <para>
         ///     For example, if name is A1, B1 contains A1*2, and C1 contains B1+A1, the
-        ///     set {A1, B1, C1} is returned.
+        ///     set {A1, B1, C1} is returned, i.e., A1 was changed, so then A1 must be 
+        ///     evaluated, followed by B1 re-evaluated, followed by C1 re-evaluated.
         ///   </para>
         /// </returns>
         protected override IList<string> SetCellContents(string name, string text)
         {
             if (ReferenceEquals(null, text))
             {
-                throw new ArgumentException();
+                throw new ArgumentNullException();
             }
             object n = GetCellContents(name);
             // check whether cell contain the name before and recalcuate the relationship 
