@@ -67,12 +67,12 @@ public class AS5_Tests
     public void SaveAndRead()
     {
         AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
-        ss.SetContentsOfCell("a1","abc");
+        ss.SetContentsOfCell("a1", "abc");
         ss.SetContentsOfCell("a2", "1.0");
         ss.SetContentsOfCell("a3", "=a2");
         ss.Save("saveRead.txt");
         Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save.txt"));
-        AbstractSpreadsheet sss = new Spreadsheet("saveRead.txt",s => true, s => s, "hello");
+        AbstractSpreadsheet sss = new Spreadsheet("saveRead.txt", s => true, s => s, "hello");
         Assert.AreEqual("abc", sss.GetCellContents("a1"));
     }
     [TestMethod]
