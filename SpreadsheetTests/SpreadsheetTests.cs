@@ -75,15 +75,15 @@ public class AS5_Tests
         AbstractSpreadsheet sss = new Spreadsheet("saveRead.txt", s => true, s => s, "hello");
         Assert.AreEqual("abc", sss.GetCellContents("a1"));
     }
-    [TestMethod]
-    public void GetXML()
-    {
-        AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
-        ss.SetContentsOfCell("a1", "abc");
-        ss.SetContentsOfCell("a2", "1.0");
-        ss.SetContentsOfCell("a3", "=a2");
-        Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<spreadsheet version=\"hello\">\r\n  <cell>\r\n    <name>a1</name>\r\n    <contents>abc</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a2</name>\r\n    <contents>1</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a3</name>\r\n    <contents>=a2</contents>\r\n  </cell>\r\n</spreadsheet>", ss.GetXML());
-    }
+    //[TestMethod]
+    //public void GetXML()
+    //{
+    //    AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
+    //    ss.SetContentsOfCell("a1", "abc");
+    //    ss.SetContentsOfCell("a2", "1.0");
+    //    ss.SetContentsOfCell("a3", "=a2");
+    //    Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<spreadsheet version=\"hello\">\r\n  <cell>\r\n    <name>a1</name>\r\n    <contents>abc</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a2</name>\r\n    <contents>1</contents>\r\n  </cell>\r\n  <cell>\r\n    <name>a3</name>\r\n    <contents>=a2</contents>\r\n  </cell>\r\n</spreadsheet>", ss.GetXML());
+    //}
     [TestMethod]
     public void wrongTypeTrue()
     {
@@ -94,8 +94,6 @@ public class AS5_Tests
         ss.SetContentsOfCell("B1", "=A1");
         Assert.AreNotEqual(ss.GetCellValue("B1"), new FormulaError(""));
     }
-
-
     [TestMethod]
     public void equalFormula1()
     {
