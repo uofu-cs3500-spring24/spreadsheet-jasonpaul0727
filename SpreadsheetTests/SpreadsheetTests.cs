@@ -77,7 +77,6 @@ public class AS5_Tests
         sheet.SetContentsOfCell("a3", "=a2");
         sheet.SetContentsOfCell("a1", "=a1+a2");
         sheet.SetContentsOfCell("a2", "=a2+a1");
-        sheet.SetContentsOfCell("a3", "=a3+a1");
     }
     [TestMethod]
     [ExpectedException(typeof(InvalidNameException))]
@@ -85,7 +84,15 @@ public class AS5_Tests
     {
         Spreadsheet sheet = new Spreadsheet();
         DependencyGraph D = new DependencyGraph();
-        sheet.SetContentsOfCell("/;5", "=15");
+        sheet.SetContentsOfCell("A/5", "=15");
+    }
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void TesttheCircularFormulaInvalidValue()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        DependencyGraph D = new DependencyGraph();
+        sheet.SetContentsOfCell("A5", "=/-]5");
     }
     [TestMethod]
     public void testTheSpreadSheetConstructor2()
@@ -176,6 +183,24 @@ public class AS5_Tests
         s.SetContentsOfCell("B1", "= A1 + 5.2");
         Assert.AreEqual(9.3, s.GetCellValue("B1"));
     }
-    // test set content of Data
-
+    /// <summary>
+    /// Test exception of wrong format of sting
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(InvalidNameException))]
+    public void GetCellContentsException4()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        sheet.SetContentsOfCell("/2d", "ss");
+    }
+    /// <summary>
+    /// Test exception of wrong format of sting
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(InvalidNameException))]
+    public void GetCellContentsExceptiondouble()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        sheet.SetContentsOfCell("/2d", "5.8");
+    }
 }

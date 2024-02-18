@@ -218,11 +218,6 @@ namespace SS
         /// </returns>
         protected override IList<string> SetCellContents(string name, double number)
         {
-            // check invaid format
-            if (!variableCheck(name) || ReferenceEquals(null, name))
-            {
-                throw new InvalidNameException();
-            }
             // check whether cell contain the name before and recalcuate the relationship 
             Cell c = new Cell(name, number);
             cells[name] = c;
@@ -258,11 +253,6 @@ namespace SS
         /// </returns>
         protected override IList<string> SetCellContents(string name, string text)
         {
-            // check the invaid form of text and name 
-            if (!variableCheck(name) || ReferenceEquals(null, name))
-            {
-                throw new InvalidNameException();
-            }
             if (ReferenceEquals(null, text))
             {
                 throw new ArgumentException();
@@ -310,10 +300,6 @@ namespace SS
         /// </returns>
         protected override IList<string> SetCellContents(string name, Formula formula)
         {
-            if (ReferenceEquals(null, name) || !variableCheck(name))
-            {
-                throw new InvalidNameException();
-            }
             // storing the old value and denpendent
             object old_Value = GetCellContents(name);
             HashSet<string> s = new HashSet<string>(DG.GetDependees(name));
