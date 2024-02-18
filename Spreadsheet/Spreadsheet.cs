@@ -1,4 +1,4 @@
-﻿using SpreadsheetUtilities;
+using SpreadsheetUtilities;
 using SS;
 using System;
 using System.Collections;
