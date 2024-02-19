@@ -75,8 +75,6 @@ namespace SS
         {
         }
     }
-
-
     /// <summary>
     /// <para>
     ///     An AbstractSpreadsheet object represents the state of a simple spreadsheet.  A 
