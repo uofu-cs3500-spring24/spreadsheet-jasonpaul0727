@@ -11,7 +11,7 @@ Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Aca
 # Overview of the Spreadsheet functionality
 
 The Spreadsheet program is currently in the process of developing a software application similar to Excel. The first significant milestone in this project has been achieved
-, which involves the development of a formula evaluator , formula and spreadSheet
+, which involves the development of a formula evaluator , formula,spreadSheet,save and load
 # Time Expenditures:
 
     Hours Estimated/Worked         Assignment                     
