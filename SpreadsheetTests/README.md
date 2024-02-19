@@ -13,12 +13,11 @@ Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Aca
 I create the test for testing the wrong format of circular exception and Invaid name Exception and Formula Exception
 I also test for the get cell content for formula,string and double, and most important part for save and Get XML
 
-# References:
-    1. AssertEqual c# - https://junit.org/junit4/javadoc/4.8/org/junit/Assert.html
-    2. c# Exception https://www.w3schools.com/cs/cs_exceptions.php
-    3. Difference between Enumerable and Ienumerator C#? - https://stackoverflow.com/questions/619564/what-is-the-difference-between-ienumerator-and-ienumerable
-
 # Consulted Peers:
 Morgan Dietz;
 PeiYi Hu;
 Shay Xia;
+# References:
+    1. AssertEqual c# - https://junit.org/junit4/javadoc/4.8/org/junit/Assert.html
+    2. c# Exception https://www.w3schools.com/cs/cs_exceptions.php
+    3. Difference between Enumerable and Ienumerator C#? - https://stackoverflow.com/questions/619564/what-is-the-difference-between-ienumerator-and-ienumerable
