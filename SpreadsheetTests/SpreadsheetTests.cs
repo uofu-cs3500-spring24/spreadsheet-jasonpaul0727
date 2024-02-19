@@ -134,6 +134,9 @@ public class AS5_Tests
         DependencyGraph DG = new DependencyGraph();
         sheet.SetContentsOfCell("A5", "=/-]5");
     }
+    /// <summary>
+    /// test the constroctor with set cell content formula
+    /// </summary>
     [TestMethod]
     public void testTheSpreadSheetConstructor2()
     {
@@ -200,7 +203,7 @@ public class AS5_Tests
         Assert.AreNotEqual("Fine", s.GetSavedVersion("save.txt"));
     }
     /// <summary>
-    /// get the XML
+    /// get the XML in true case 
     /// </summary>
     [TestMethod]
     public void GetXML()
@@ -276,7 +279,7 @@ public class AS5_Tests
         sheet.SetContentsOfCell("/2d", "5.8");
     }
     /// <summary>
-    /// Get cell content of the 
+    /// Get cell content of the  value
     /// </summary>
     [TestMethod]
     public void GetEveryValueFromKey()
@@ -364,4 +367,5 @@ public class AS5_Tests
         sheet.SetContentsOfCell("a2", "=a3+a2");
         sheet.SetContentsOfCell("a3", "=a2+a3");
     }
+
 }
