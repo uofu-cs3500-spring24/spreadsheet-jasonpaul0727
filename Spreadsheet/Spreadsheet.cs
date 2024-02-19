@@ -95,9 +95,6 @@ namespace SS
         private Dictionary<string, Cell> cells;
         private DependencyGraph DG;
         public override bool Changed { get; protected set; }
-        /// <summary>
-        /// 
-        /// </summary>
         public Spreadsheet() : this(s => true, s => s, "default")
         {
             cells = new Dictionary<string, Cell>();
@@ -397,7 +394,7 @@ namespace SS
         /// <returns> valid format or not </returns>
         private static bool variableCheck(string s)
         {
-            if (Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$") == false)
+            if (!Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$"))
             {
                 return false;
             }
@@ -528,7 +525,7 @@ namespace SS
         /// <returns>Returns the version information of the spreadsheet saved in the named file.</returns>
         public override string GetSavedVersion(string filename)
         {
-            string result="";
+            string result=" ";
             try
             {
                 using (XmlReader reader = XmlReader.Create(filename))
@@ -599,7 +596,6 @@ namespace SS
                             case Formula:
                                 writer.WriteElementString("contents", "=" + ((Formula)c.content).ToString());
                                 break;
-
                         }
                         writer.WriteEndElement();
                     }
