@@ -14,10 +14,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml;
-
-
-namespace SS
-{
     /// <summary>
     /// Author:    Yanxia Bu
     /// Partner:    No
@@ -36,6 +32,9 @@ namespace SS
     /// as many times as the related cells are modified. 
     ///   Formula
     /// </summary>
+
+namespace SS
+{
     public class Spreadsheet : AbstractSpreadsheet
     {
         /// <summary>
@@ -44,6 +43,7 @@ namespace SS
         /// </summary>
         private class Cell
         {
+            // name of the cell 
             public string name
             { get; set; }
 
@@ -94,15 +94,18 @@ namespace SS
         // create the dict <string, Cell>
         private Dictionary<string, Cell> cells;
         private DependencyGraph DG;
+        // boolean vairable check if cells are change 
         public override bool Changed { get; protected set; }
+        /// <summary>
+        ///constructor of no version 
+        /// </summary>
         public Spreadsheet() : this(s => true, s => s, "default")
         {
             cells = new Dictionary<string, Cell>();
             DG = new DependencyGraph();
-            Changed = false;
         }
         /// <summary>
-        /// 
+        /// the constructor not file but have formula in local 
         /// </summary>
         /// <param name="isValid"></param>
         /// <param name="normalize"></param>
@@ -113,65 +116,69 @@ namespace SS
             DG = new DependencyGraph();
 
         }
+        /// <summary>
+        /// getting the file and read the content
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="isValid"></param>
+        /// <param name="normalize"></param>
+        /// <param name="version"></param>
+        /// <exception cref="SpreadsheetReadWriteException"></exception>
         public Spreadsheet(string filePath, Func<string, bool> isValid, Func<string, string> normalize, string version) : this(isValid, normalize, version)
         {
             string CellName = "";
             cells = new Dictionary<string, Cell>();
             DG = new DependencyGraph();
             if (filePath == null || GetSavedVersion(filePath) != version) throw new SpreadsheetReadWriteException("Wrong Format of Spreadsheet");
-            
-                using (XmlReader reader = XmlReader.Create(filePath))
+            // read the content of file
+            using (XmlReader reader = XmlReader.Create(filePath))
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    if (reader.IsStartElement())
                     {
-                        if (reader.IsStartElement())
+                        // if read content transfer to the string and ignore the space
+                        switch (reader.Name)
                         {
-                            switch (reader.Name)
-                            {
-                                case "contents":
-                                    reader.Read();
-                                    string s = reader.ReadContentAsString();
-                                    s = s.Trim();
-                                    SetContentsOfCell(CellName, s);
-                                    break;
-                                case "name":
-                                    reader.Read();
-                                    CellName = reader.Value;
-                                    break;
-                                case "cell":
-                                    break;
-                                case "spreadsheet":
-                                    break;
-                            }
+                            case "contents":
+                                reader.Read();
+                                string s = reader.ReadContentAsString();
+                                s = s.Trim();
+                                SetContentsOfCell(CellName, s);
+                                break;
+                            // check the name and get the value
+                            case "name":
+                                reader.Read();
+                                CellName = reader.Value;
+                                break;
+                            case "cell":
+                                break;
+                            case "spreadsheet":
+                                break;
                         }
-
                     }
+
                 }
             }
-
-            // read xml 
-            // read every cell from Cell Xml 
-            // validate name of every cell
-            // add every cell to Spreadsheet using setContentOf cell . 
+        }
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.
         /// </summary>
         public override object GetCellContents(string name)
         {
-            // check invalid type
+            // check invalid type and referece is null
             if (!variableCheck(Normalize(name)) || ReferenceEquals(null, Normalize(name)))
             {
                 throw new InvalidNameException();
             }
+            // get the content of cell if cell is not empty
             if (cells.ContainsKey(Normalize(name)))
             {
                 return cells[Normalize(name)].content;
             }
             return "";
         }
-
-
         /// <summary>
         /// Returns an Enumerable that can be used to enumerates 
         /// the names of all the non-empty cells in the spreadsheet.
@@ -189,7 +196,6 @@ namespace SS
             }
             return cellSet;
         }
-
         /// <summary>
         ///  Set the contents of the named cell to the given number.  
         /// </summary>
@@ -263,6 +269,7 @@ namespace SS
             DG.ReplaceDependents(name, new HashSet<string>());
             Cell c = new Cell(name, text);
             cells[name] = c;
+            // recalculate the relation 
             List<string> cellSet = new List<string>(GetCellsToRecalculate(name));
             return cellSet;
         }
@@ -307,6 +314,7 @@ namespace SS
             // replace the dependent
             DG.ReplaceDependees(name, formula.GetVariables());
             IEnumerable<string> Check = formula.GetVariables();
+            //If  invalid formula, throw a FormulaFormatException.
             foreach (string str in Check)
             {
                 if (!IsValid(str))
@@ -470,12 +478,15 @@ namespace SS
         /// </returns>
         public override IList<string> SetContentsOfCell(string name, string content)
         {
+            // Normalize the name
             string names = Normalize(name);
             IList<string> cellsContents = new List<string>();
+            // check the wrong case
             if (name == null || !variableCheck(name) || IsValid(Normalize(name)) != true)
             {
                 throw new InvalidNameException();
             }
+            // check the content type and set up
             if (double.TryParse(content, out double result))
             {
                 cellsContents = new List<string>(SetCellContents(Normalize(name), result));
@@ -492,6 +503,7 @@ namespace SS
                 cellsContents = new List<string>(SetCellContents(Normalize(name), content.ToString()));
             }
             Changed = true;
+            // check each variable and get the double value of variable and evaluate 
             foreach (string s in cellsContents)
             {
                 if (cells.ContainsKey(s))
@@ -528,6 +540,7 @@ namespace SS
             string result=" ";
             try
             {
+                // check the version when reading the file
                 using (XmlReader reader = XmlReader.Create(filename))
                 {
                     while (reader.Read())
@@ -543,6 +556,7 @@ namespace SS
                     return result;
                 }
             }
+            // throw exception if cannot find the file
             catch
             {
                 throw new SpreadsheetReadWriteException("can not found File");
@@ -571,20 +585,25 @@ namespace SS
         /// </summary>
         public override void Save(string filename)
         {
+            ///create the XML setting
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = "  ";
             try
             {
+                // open the file 
                 using (XmlWriter writer = XmlWriter.Create(filename, settings))
                 {
+                    // start recognize the tile 
                     writer.WriteStartDocument();
                     writer.WriteStartElement("spreadsheet");
                     writer.WriteAttributeString("version", Version);
+                    // we have many cell and each cell contain different type of value
                     foreach (Cell c in cells.Values)
                     {
                         writer.WriteStartElement("cell");
                         writer.WriteElementString("name", (string?)c.name);
+                        // each cell contain different type of value we mark tag after each taf
                         switch (c.content)
                         {
                             case double:
@@ -596,9 +615,11 @@ namespace SS
                             case Formula:
                                 writer.WriteElementString("contents", "=" + ((Formula)c.content).ToString());
                                 break;
+
                         }
                         writer.WriteEndElement();
                     }
+                    // finish writing and close
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                     writer.Close();
@@ -613,10 +634,10 @@ namespace SS
         /// <summary>
         ///   Return an XML representation of the spreadsheet's contents
         /// </summary>
-        /// <returns> contents in XML form </returns>
+        /// <returns contents in XML>  form </returns>
         public override string GetXML()
         {
-
+            ///create the XML setting
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = "  ";
@@ -625,13 +646,16 @@ namespace SS
             {
                 using (XmlWriter writer = XmlWriter.Create(strbuild, settings))
                 {
+                    // start recognize the tile 
                     writer.WriteStartDocument();
                     writer.WriteStartElement("spreadsheet");
                     writer.WriteAttributeString("version", Version);
+                    // we have many cell and each cell contain different type of value
                     foreach (Cell c in cells.Values)
                     {
                         writer.WriteStartElement("cell");
                         writer.WriteElementString("name", (string?)c.name);
+                        // each cell contain different type of value we mark tag after each taf
                         switch (c.content)
                         {
                             case double:
@@ -647,6 +671,7 @@ namespace SS
                         }
                         writer.WriteEndElement();
                     }
+                    // finish writing and close
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                     writer.Close();
@@ -676,16 +701,24 @@ namespace SS
         /// </returns>
         public override object GetCellValue(string name)
         {
+            // if name is wrong type
             if (!variableCheck(name))
             {
                 throw new InvalidNameException();
             }
+            // throw the value
             if (cells.TryGetValue(name, out Cell? cell))
             {
                 return cells[name].value;
             }
             return "";
         }
+        /// <summary>
+        /// this method is test trasger variable to double
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns double></returns> 
+        /// <exception cref="ArgumentException"></exception>
         private double lookup(string variable)
         {
             if (cells.TryGetValue(Normalize(variable), out Cell? cell))
