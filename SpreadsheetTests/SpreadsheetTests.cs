@@ -1,3 +1,4 @@
+
 using Microsoft.VisualBasic;
 using NuGet.Frameworks;
 using SpreadsheetUtilities;
@@ -158,7 +159,7 @@ public class AS5_Tests
     {
         AbstractSpreadsheet ss = new Spreadsheet();
         ss.Save("save.txt");
-        ss = new Spreadsheet("save.txt", s=>true, s => s,"version");
+        ss = new Spreadsheet("save.txt", s => true, s => s, "version");
     }
     /// <summary>
     /// save the test with correct format 
@@ -346,7 +347,7 @@ public class AS5_Tests
     [ExpectedException(typeof(FormulaFormatException))]
     public void CheckFormulaException()
     {
-        AbstractSpreadsheet s = new Spreadsheet(s => s[0] != 'C', s => s,"hello");
+        AbstractSpreadsheet s = new Spreadsheet(s => s[0] != 'C', s => s, "hello");
         s.SetContentsOfCell("B1", "=C1+C2");
     }
     /// <summary>
