@@ -10,7 +10,7 @@ Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Aca
 ```
 
 # Comments to Evaluators:
-I create the test for testing the wrong format of circular exception and Invaidname Exception and Formula Exception
+I create the test for testing the wrong format of circular exception and Invaid name Exception and Formula Exception
 I also test for the get cell content for formula,string and double, and most important part for save and Get XML
 
 # References:

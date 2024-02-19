@@ -4,19 +4,20 @@ Partner:    None
 Course:     CS 3500, University of Utah, School of Computing
 GitHub ID: jasonpaul0727
 Repo:     https://github.com/uofu-cs3500-spring24/spreadsheet-jasonpaul0727
-Date:		2/9/2024
-Project:   spreadSheet
+Date:		2/18/2024
+Project:   spreadSheet Model
 Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Academic Coursework.
 ```
 
 # Comments to spreadSheet
-The spread sheet is doing for connect the dependent of each cell each cell also contain the different type such as formula and double 
-we also need prevent the different type of exception
+The spreadsheet model first changing the constructor of the sprea sheet we need consider the 3 case of spreadsheet. second it change the method to 
+protect method for set cell content and use setcontentof cell to recongize the value of the cell.Thirdly, we add the getCellvalue which we can get the value of the cell.
+Moreover, we add the save and get txt in xml format. 
 # Consulted Peers:
 Hong Hu
 PeiYi Hu
 Shay Xia
 # References:
-    1. How to define the Hashset c# - https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0
-    2. hashset<T> Add c# -https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1.add?view=net-8.0
-    3. Difference between Enumerable and Ienumerator C#? - https://stackoverflow.com/questions/619564/what-is-the-difference-between-ienumerator-and-ienumerable
+    1. SaveXML c# - https://learn.microsoft.com/en-us/dotnet/api/system.xml.xmldocument.save?view=net-8.0
+    2. XMLDemo By professor Germain -https://github.com/uofu-cs3500-spring24/ForStudents/tree/main/Examples/XMLDemo
+    3. C# constructor - https://www.geeksforgeeks.org/c-sharp-default-constructor/

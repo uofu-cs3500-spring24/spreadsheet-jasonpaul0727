@@ -4,7 +4,7 @@ Start Date: 15-Jan-2024
 Course:     CS 3500, University of Utah, School of Computing
 GitHub ID:  jasonpaul0727
 Repo:       https://github.com/uofu-cs3500-spring24/spreadsheet-jasonpaul0727
-Commit Date: 9\-Feb-2024 13:10
+Commit Date: 18-Feb-2024 13:10s
 Solution:   Spreadsheet
 Copyright:  CS 3500 and [Yanxia Bu] - This work may not be copied for use in Academic Coursework
 
@@ -19,4 +19,5 @@ The Spreadsheet program is currently in the process of developing a software app
           6    /   15    - Assignment 2 - Dependency Graph     
           13   /    15   - Assignment 3 - formula
           8  /   12   - Assignment 4 -  Onward to spreadsheet
-          Null /   12   - Assignment 5 -  A Complete Spreadsheet Model
+         25/   12   - Assignment 5 -  A Complete Spreadsheet Model
+         NUll/   18   - Assignment 6-   Spreadsheet Front-End Graphical User Interface
