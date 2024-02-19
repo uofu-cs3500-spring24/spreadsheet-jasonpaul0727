@@ -240,7 +240,7 @@ public class AS5_Tests
     public void saveWrongFolder()
     {
         AbstractSpreadsheet s = new Spreadsheet();
-        s.Save("+*--.txt");
+        s.Save(" ");
     }
     /// <summary>
     /// test the get cell content 
