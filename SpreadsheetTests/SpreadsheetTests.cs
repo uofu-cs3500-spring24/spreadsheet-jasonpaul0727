@@ -233,6 +233,16 @@ public class AS5_Tests
         ss.Save("save.txt");
     }
     /// <summary>
+    /// test save wrong format txt
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(SpreadsheetReadWriteException))]
+    public void saveWrongFolder()
+    {
+        AbstractSpreadsheet s = new Spreadsheet();
+        s.Save("/?save.txt");
+    }
+    /// <summary>
     /// test the get cell content 
     /// </summary>
     [TestMethod]
