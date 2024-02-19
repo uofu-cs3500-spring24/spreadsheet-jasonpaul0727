@@ -100,9 +100,9 @@ public class AS5_Tests
     public void testTheSpreadSheetConstructor2()
     {
         AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s.ToUpper(), "");
-        ss.SetContentsOfCell("A1","hello");
-        Assert.AreEqual("hello",ss.GetCellContents("A1"));
-        Assert.AreEqual("",ss.GetCellContents("B1"));
+        ss.SetContentsOfCell("A1", "hello");
+        Assert.AreEqual("hello", ss.GetCellContents("A1"));
+        Assert.AreEqual("", ss.GetCellContents("B1"));
         ss.SetContentsOfCell("C1", "");
         ss.SetContentsOfCell("D1", "6");
         ss.SetContentsOfCell("F1", "= D1");
@@ -133,7 +133,7 @@ public class AS5_Tests
         AbstractSpreadsheet ss = new Spreadsheet(s => true, s => s, "hello");
         ss.Save("save.txt");
         ss.Save("save1.txt");
-       Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save1.txt"));
+        Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save1.txt"));
         Assert.AreEqual("hello", new Spreadsheet().GetSavedVersion("save.txt"));
     }
     [TestMethod]
@@ -174,16 +174,27 @@ public class AS5_Tests
     {
         AbstractSpreadsheet s = new Spreadsheet(s => true, s => s, "hello");
         AbstractSpreadsheet ss = new Spreadsheet(s => false, s => "sfce", "hel");
-         Assert.AreEqual("()o", new Spreadsheet().GetSavedVersion("()o.txt"));
+        Assert.AreEqual("()o", new Spreadsheet().GetSavedVersion("()o.txt"));
         ss.Save("save.txt");
     }
-        [TestMethod]
+    [TestMethod]
     public void equalFormula1()
     {
         AbstractSpreadsheet s = new Spreadsheet();
         s.SetContentsOfCell("A1", "4.1");
         s.SetContentsOfCell("B1", "= A1 + 5.2");
         Assert.AreEqual(9.3, s.GetCellValue("B1"));
+    }
+    /// <summary>
+    /// test throw the exception
+    /// </summary>
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void equalFormulaException()
+    {
+        AbstractSpreadsheet s = new Spreadsheet();
+        s.SetContentsOfCell("A1", "4.1");
+        s.SetContentsOfCell("B1", "= A1 + -/");
     }
     /// <summary>
     /// Test exception of wrong format of sting
@@ -269,6 +280,12 @@ public class AS5_Tests
         sheet.SetContentsOfCell("a1", "4");
         sheet.SetContentsOfCell("a2", "5");
         sheet.SetContentsOfCell("a2", "=a3+a2");
-
+    }
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void CheckFormulaException()
+    {
+        AbstractSpreadsheet s = new Spreadsheet(s => s[0] != 'A', s => s,"hello");
+        s.SetContentsOfCell("B1", "=A1+A2");
     }
 }
