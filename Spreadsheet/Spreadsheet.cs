@@ -197,25 +197,36 @@ namespace SS
             return cellSet;
         }
         /// <summary>
-        ///  Set the contents of the named cell to the given number.  
+        /// The contents of the named cell becomes the text.  
         /// </summary>
         /// 
+        /// <requires> 
+        ///   The name parameter must be valid/non-empty ""
+        /// </requires>
+        /// 
         /// <exception cref="InvalidNameException"> 
-        ///   If the name is null or invalid, throw an InvalidNameException
-        /// </exception>
+        ///   If the name is invalid, throw an InvalidNameException
+        /// </exception>       
         /// 
         /// <param name="name"> The name of the cell </param>
-        /// <param name="number"> The new contents/value </param>
+        /// <param name="text"> The new content/value of the cell</param>
         /// 
         /// <returns>
         ///   <para>
-        ///      The method returns a set consisting of name plus the names of all other cells whose value depends, 
-        ///      directly or indirectly, on the named cell.
+        ///       This method returns a LIST consisting of the passed in name followed by the names of all 
+        ///       other cells whose value depends, directly or indirectly, on the named cell.
         ///   </para>
-        /// 
+        ///
         ///   <para>
-        ///      For example, if name is A1, B1 contains A1*2, and C1 contains B1+A1, the
-        ///      set {A1, B1, C1} is returned.
+        ///       The order must correspond to a valid dependency ordering for recomputing
+        ///       all of the cells, i.e., if you re-evaluate each cell in the order of the list,
+        ///       the overall spreadsheet will be consistently updated.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     For example, if name is A1, B1 contains A1*2, and C1 contains B1+A1, the
+        ///     set {A1, B1, C1} is returned, i.e., A1 was changed, so then A1 must be 
+        ///     evaluated, followed by B1 re-evaluated, followed by C1 re-evaluated.
         ///   </para>
         /// </returns>
         protected override IList<string> SetCellContents(string name, double number)
@@ -277,12 +288,12 @@ namespace SS
         /// Set the contents of the named cell to the formula.  
         /// </summary>
         /// 
-        /// <exception cref="ArgumentNullException"> 
-        ///   If formula parameter is null, throw an ArgumentNullException.
-        /// </exception>
+        /// <requires> 
+        ///   The name parameter must be valid/non-empty
+        /// </requires>
         /// 
         /// <exception cref="InvalidNameException"> 
-        ///   If the name is null or invalid, throw an InvalidNameException
+        ///   If the name is invalid, throw an InvalidNameException
         /// </exception>
         /// 
         /// <exception cref="CircularException"> 
@@ -296,14 +307,21 @@ namespace SS
         /// 
         /// <returns>
         ///   <para>
-        ///     The method returns a Set consisting of name plus the names of all other 
-        ///     cells whose value depends, directly or indirectly, on the named cell.
+        ///       This method returns a LIST consisting of the passed in name followed by the names of all 
+        ///       other cells whose value depends, directly or indirectly, on the named cell.
         ///   </para>
-        ///   <para> 
+        ///
+        ///   <para>
+        ///       The order must correspond to a valid dependency ordering for recomputing
+        ///       all of the cells, i.e., if you re-evaluate each cell in the order of the list,
+        ///       the overall spreadsheet will be consistently updated.
+        ///   </para>
+        ///
+        ///   <para>
         ///     For example, if name is A1, B1 contains A1*2, and C1 contains B1+A1, the
-        ///     set {A1, B1, C1} is returned.
+        ///     set {A1, B1, C1} is returned, i.e., A1 was changed, so then A1 must be 
+        ///     evaluated, followed by B1 re-evaluated, followed by C1 re-evaluated.
         ///   </para>
-        /// 
         /// </returns>
         protected override IList<string> SetCellContents(string name, Formula formula)
         {
@@ -394,19 +412,6 @@ namespace SS
         {
 
             return DG.GetDependents(name);
-        }
-        /// <summary>
-        /// check it is valid of the type of variable
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns> valid format or not </returns>
-        private static bool variableCheck(string s)
-        {
-            if (!Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$"))
-            {
-                return false;
-            }
-            return true;
         }
         /// <summary>
         ///   <para>Sets the contents of the named cell to the appropriate value. </para>
@@ -729,6 +734,19 @@ namespace SS
                 }
             }
             throw new ArgumentException("Formula Error");
+        }
+        /// <summary>
+        /// check it is valid of the type of variable
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns> valid format or not </returns>
+        private static bool variableCheck(string s)
+        {
+            if (!Regex.IsMatch(s, @"^[a-zA-Z_](?:[a-zA-Z_]|\d)*$"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
