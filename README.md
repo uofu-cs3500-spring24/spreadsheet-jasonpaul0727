@@ -23,4 +23,6 @@ The Spreadsheet program is currently in the process of developing a software app
          NUll/   18   - Assignment 6-   Spreadsheet Front-End Graphical User Interface
 # My Software Practices section:
 1. checkVairable method - I think is really good because I use the Code re-use method I check variable in many area which I check the variable type is valid or not
-2. setContentOfCell logic - in this method I use seperation of concern 
+2. setContentOfCell logic - in this method I use seperation of concern by I using the switch method to test the case of each type 
+3. create Normalize variable - I think is really good because I use the Code re-use method I will not woory about I forgot check the name wheather it is normalize in later 
+that may cause many time to debug it. 
