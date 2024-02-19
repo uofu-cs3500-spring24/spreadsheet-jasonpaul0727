@@ -367,5 +367,48 @@ public class AS5_Tests
         sheet.SetContentsOfCell("a2", "=a3+a2");
         sheet.SetContentsOfCell("a3", "=a2+a3");
     }
+    /// <summary>
+    /// Get cell content of the formula StreesTest
+    /// </summary>
+    [TestMethod]
+    public void StressTest()
+    {
+        Spreadsheet sheet = new Spreadsheet();
+        sheet.SetContentsOfCell("a1", "=a2+a3");
+        sheet.SetContentsOfCell("a1", "=a3+a4");
+        sheet.SetContentsOfCell("a1", "=a5+a6");
+        sheet.SetContentsOfCell("a1", "=a6+a7");
+        sheet.SetContentsOfCell("a1", "=a8+a9");
+        sheet.SetContentsOfCell("a1", "=a9+b1");
+        sheet.SetContentsOfCell("a1", "=b1+b2");
+        sheet.SetContentsOfCell("a1", "=b3+b4");
+        sheet.SetContentsOfCell("a1", "=b4+b5");
+        sheet.SetContentsOfCell("a1", "=1");
+        Assert.AreNotEqual(sheet.GetCellContents("a7"), "1");
+    }
+    /// <summary>
+    /// Get cell content of the formula StreesTest
+    /// </summary>
+    [TestMethod]
+    public void StressTest1()
+    {
+        StressTest();
+    }
+    /// <summary>
+    /// Get cell content of the formula StreesTest
+    /// </summary>
+    [TestMethod]
+    public void StressTest2()
+    {
+        StressTest1();
+    }
+    /// <summary>
+    /// Get cell content of the formula StreesTest
+    /// </summary>
+    [TestMethod]
+    public void StressTest3()
+    {
+        StressTest2();
+    }
 
 }

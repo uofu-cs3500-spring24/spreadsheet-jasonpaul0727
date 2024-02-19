@@ -32,7 +32,6 @@ using System.Xml;
     /// as many times as the related cells are modified. 
     ///   Formula
     /// </summary>
-
 namespace SS
 {
     public class Spreadsheet : AbstractSpreadsheet
