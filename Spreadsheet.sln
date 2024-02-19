@@ -25,6 +25,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetTests", "SpreadsheetTests\SpreadsheetTests.csproj", "{B3C3461F-9C16-454A-B026-2B6CCF2DB9CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "whiteboard", "whiteboard", "{1620834F-5B13-41D0-8DCC-7DC7BF52B635}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Downloads\architecture.jpg = ..\..\..\Downloads\architecture.jpg
+		..\..\..\Downloads\dependency_graph_whiteboard.jpg = ..\..\..\Downloads\dependency_graph_whiteboard.jpg
+		..\..\..\Downloads\formula_whiteboard.jpg = ..\..\..\Downloads\formula_whiteboard.jpg
+		..\..\..\Downloads\spreadsheet_whiteboard.jpg = ..\..\..\Downloads\spreadsheet_whiteboard.jpg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

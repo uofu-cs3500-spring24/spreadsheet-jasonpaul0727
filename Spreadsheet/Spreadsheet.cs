@@ -620,7 +620,6 @@ namespace SS
                             case Formula:
                                 writer.WriteElementString("contents", "=" + ((Formula)c.content).ToString());
                                 break;
-
                         }
                         writer.WriteEndElement();
                     }
@@ -688,7 +687,6 @@ namespace SS
                 throw new SpreadsheetReadWriteException(e.Message);
             }
             return strbuild.ToString();
-
         }
         /// <summary>
         /// If name is invalid, throws an InvalidNameException.

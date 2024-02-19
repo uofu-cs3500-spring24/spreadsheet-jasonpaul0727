@@ -19,7 +19,7 @@ The Spreadsheet program is currently in the process of developing a software app
           6    /   15    - Assignment 2 - Dependency Graph     
           13   /    15   - Assignment 3 - formula
           8  /   12   - Assignment 4 -  Onward to spreadsheet
-         25/   12   - Assignment 5 -  A Complete Spreadsheet Model
+          25/   12   - Assignment 5 -  A Complete Spreadsheet Model
          NUll/   18   - Assignment 6-   Spreadsheet Front-End Graphical User Interface
 # My Software Practices section:
 1. checkVairable method - I think is really good because I use the Code re-use method I check variable in many area which I check the variable type is valid or not
