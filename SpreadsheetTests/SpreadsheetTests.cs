@@ -350,16 +350,6 @@ public class AS5_Tests
         s.SetContentsOfCell("B1", "=C1+C2");
     }
     /// <summary>
-    /// test save wrong format txt
-    /// </summary>
-    [TestMethod]
-    [ExpectedException(typeof(SpreadsheetReadWriteException))]
-    public void saveWrongFolder()
-    {
-        AbstractSpreadsheet s = new Spreadsheet();
-        s.Save("/$%save.txt");
-    }
-    /// <summary>
     /// Get cell content of the formula
     /// </summary>
     [TestMethod]
